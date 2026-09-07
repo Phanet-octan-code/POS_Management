@@ -82,7 +82,7 @@ class UserRolePermissionTest extends TestCase
         $response->assertRedirect();
         $response->assertSessionHas('success');
 
-        $createdUser = User::where('name', 'Test Cashier User')->first();
+        $createdUser = User::where('name', 'Test Cashier User')->latest('id')->first();
         $this->assertNotNull($createdUser);
         $this->assertTrue($createdUser->is_active);
         $this->assertTrue($createdUser->roles()->where('slug', 'cashier')->exists());

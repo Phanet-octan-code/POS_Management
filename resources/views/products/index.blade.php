@@ -385,6 +385,11 @@
     }
 
     function confirmDeleteProduct(id, name) {
+        if (!id) {
+            Swal.fire('Error', 'Invalid product ID.', 'error');
+            return;
+        }
+
         Swal.fire({
             title: 'Delete Product?',
             text: `Are you sure you want to delete '${name}'?`,
@@ -396,7 +401,10 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetchJson(`/products/${id}`, { method: 'DELETE' });
+                    const res = await fetchJson(`/products/${id}`, { 
+                        method: 'DELETE',
+                        body: JSON.stringify({ id: id })
+                    });
                     if (res.success) {
                         const row = document.getElementById(`product-row-${id}`);
                         if (row) row.remove();

@@ -104,6 +104,7 @@ Route::middleware(['auth', 'active_user'])->group(function () {
         Route::get('products/generate-sku', [ProductController::class, 'generateSku'])->name('products.generate-sku');
         Route::get('products/generate-barcode', [ProductController::class, 'generateBarcode'])->name('products.generate-barcode');
         Route::patch('products/{product}/status', [ProductController::class, 'toggleStatus'])->name('products.toggle-status');
+        Route::delete('products', [ProductController::class, 'destroyAny'])->name('products.destroy-any');
         Route::resource('products', ProductController::class);
     });
 

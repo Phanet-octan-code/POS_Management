@@ -42,6 +42,28 @@ class AppServiceProvider extends ServiceProvider
             });
         }
 
+        // Register Firebase Cloud Synchronization Observer for all core domain models
+        $modelsToSync = [
+            \App\Models\Product::class,
+            \App\Models\Sale::class,
+            \App\Models\Category::class,
+            \App\Models\Brand::class,
+            \App\Models\Customer::class,
+            \App\Models\Supplier::class,
+            \App\Models\Purchase::class,
+            \App\Models\Expense::class,
+            \App\Models\ReturnOrder::class,
+            \App\Models\StockMovement::class,
+            \App\Models\Setting::class,
+            \App\Models\ActivityLog::class,
+            \App\Models\Notification::class,
+            \App\Models\User::class,
+        ];
+
+        foreach ($modelsToSync as $modelClass) {
+            $modelClass::observe(\App\Observers\FirebaseSyncObserver::class);
+        }
+
         // Globally share dynamic application settings with all views
         View::composer('*', function ($view) {
             $view->with('appSettings', \App\Models\Setting::getAll());

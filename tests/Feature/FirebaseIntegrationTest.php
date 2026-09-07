@@ -20,6 +20,12 @@ class FirebaseIntegrationTest extends TestCase
     {
         parent::setUp();
 
+        config(['firebase.enabled' => true]);
+
+        Http::fake([
+            'https://firestore.googleapis.com/*' => Http::response(['name' => 'projects/pos-management-88866/databases/(default)/documents/test_doc'], 200),
+        ]);
+
         $this->seed(DatabaseSeeder::class);
 
         $this->admin = User::where('email', 'admin@pos.com')->first();
@@ -200,5 +206,38 @@ class FirebaseIntegrationTest extends TestCase
         Http::assertSent(function ($request) {
             return str_contains($request->url(), 'firestore.googleapis.com');
         });
+    }
+
+    public function test_model_creation_triggers_firebase_sync_observer(): void
+    {
+        Http::fake([
+            'https://firestore.googleapis.com/*' => Http::response(['name' => 'doc'], 200),
+        ]);
+
+        $uniq = uniqid();
+        \App\Models\Category::create([
+            'name' => "Automated Test Category {$uniq}",
+            'slug' => "automated-test-category-{$uniq}",
+            'description' => 'Testing observer auto-sync',
+        ]);
+
+        Http::assertSent(function ($request) {
+            return str_contains($request->url(), 'firestore.googleapis.com') &&
+                   str_contains($request->url(), 'categories');
+        });
+    }
+
+    public function test_firebase_service_stores_category_and_supplier(): void
+    {
+        Http::fake([
+            'https://firestore.googleapis.com/*' => Http::response(['name' => 'doc'], 200),
+        ]);
+
+        $service = app(FirebaseService::class);
+        $category = \App\Models\Category::first();
+        $supplier = \App\Models\Supplier::first();
+
+        $this->assertTrue($service->storeCategory($category));
+        $this->assertTrue($service->storeSupplier($supplier));
     }
 }

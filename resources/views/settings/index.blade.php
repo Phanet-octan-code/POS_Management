@@ -449,10 +449,19 @@ async function testFirebaseConnection() {
                 badge.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Connected';
             }
         } else {
+            const isPermissionError = (result.message || '').includes('403') || (result.message || '').includes('PERMISSION_DENIED');
             Swal.fire({
                 icon: 'warning',
-                title: 'Firebase Connection Notice',
-                text: result.message || 'Could not reach Firebase server.',
+                title: isPermissionError ? 'Firestore Rules Permission Required' : 'Firebase Connection Notice',
+                html: isPermissionError 
+                    ? `Firebase project <b>{{ config('firebase.project_id') }}</b> is reachable, but Firestore database rules are set to restricted.<br><br>
+                       <div class="text-start bg-light p-3 rounded small font-monospace">
+                         <b>To enable cloud data storage:</b><br>
+                         1. Open Firebase Console &rarr; <b>Firestore Database</b> &rarr; <b>Rules</b><br>
+                         2. Set: <code>allow read, write: if true;</code><br>
+                         3. Click <b>Publish</b>.
+                       </div>`
+                    : (result.message || 'Could not reach Firebase server.'),
                 confirmButtonColor: '#4338ca'
             });
         }

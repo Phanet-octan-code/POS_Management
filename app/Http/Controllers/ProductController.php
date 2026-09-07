@@ -254,7 +254,7 @@ class ProductController extends Controller
 
         ActivityLoggerService::log('product.delete', "deleted product '{$name}'", null, [], 'products');
 
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => $msg,
@@ -262,6 +262,48 @@ class ProductController extends Controller
         }
 
         return redirect()->route('products.index')->with('success', $msg);
+    }
+
+    /**
+     * Delete a product or multiple products via generic DELETE /products endpoint.
+     */
+    public function destroyAny(Request $request): RedirectResponse|JsonResponse
+    {
+        $id = $request->input('id') ?? $request->input('product_id') ?? $request->query('id');
+
+        // Handle bulk delete if array of ids provided
+        if ($request->has('ids') && is_array($request->input('ids'))) {
+            $deletedCount = 0;
+            foreach ($request->input('ids') as $itemId) {
+                $p = Product::find($itemId);
+                if ($p) {
+                    $p->stocks()->delete();
+                    $p->delete();
+                    $deletedCount++;
+                }
+            }
+            ActivityLoggerService::log('product.bulk_delete', "bulk deleted {$deletedCount} products", null, [], 'products');
+
+            $msg = "{$deletedCount} products deleted successfully.";
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => $msg]);
+            }
+            return redirect()->route('products.index')->with('success', $msg);
+        }
+
+        if ($id) {
+            $product = Product::find($id);
+            if ($product) {
+                return $this->destroy($product);
+            }
+        }
+
+        $errMsg = 'Product not found or invalid product ID provided.';
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => false, 'message' => $errMsg], 400);
+        }
+
+        return redirect()->route('products.index')->with('error', $errMsg);
     }
 
     public function generateSku(): JsonResponse

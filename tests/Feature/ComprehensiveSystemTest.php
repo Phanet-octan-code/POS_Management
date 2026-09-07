@@ -208,6 +208,26 @@ class ComprehensiveSystemTest extends TestCase
         $toggleRes->assertStatus(200);
         $product->refresh();
         $this->assertFalse((bool) $product->is_active);
+
+        // Delete product via /products/{product}
+        $deleteRes = $this->deleteJson(route('products.destroy', $product));
+        $deleteRes->assertStatus(200);
+        $this->assertSoftDeleted('products', ['id' => $product->id]);
+
+        // Create another product to test generic DELETE /products endpoint
+        $uniq = uniqid();
+        $product2 = Product::create([
+            'name' => 'Temp Product ' . $uniq,
+            'slug' => 'temp-product-' . $uniq,
+            'sku' => 'TMP-' . $uniq,
+            'selling_price' => 10.00,
+            'cost_price' => 5.00,
+            'stock_quantity' => 10,
+        ]);
+
+        $deleteAnyRes = $this->deleteJson('/products', ['id' => $product2->id]);
+        $deleteAnyRes->assertStatus(200);
+        $this->assertSoftDeleted('products', ['id' => $product2->id]);
     }
 
     /**

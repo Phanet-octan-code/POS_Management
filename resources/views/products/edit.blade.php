@@ -20,6 +20,9 @@
             <a href="{{ route('products.show', $product) }}" class="btn btn-outline-dark rounded-pill px-3">
                 <i class="bi bi-eye me-1"></i> View Details
             </a>
+            <button type="button" class="btn btn-outline-danger rounded-pill px-3" onclick="confirmDeleteProduct({{ $product->id }}, '{{ addslashes($product->name) }}')">
+                <i class="bi bi-trash me-1"></i> Delete
+            </button>
             <a href="{{ route('products.index') }}" class="btn btn-outline-secondary rounded-pill px-3">
                 <i class="bi bi-x-lg me-1"></i> Cancel
             </a>
@@ -269,6 +272,39 @@
         } else {
             display.innerHTML = `<span class="text-danger fw-bold">Loss: -$${Math.abs(profit).toFixed(2)} (${percent}%)</span>`;
         }
+    }
+
+    function confirmDeleteProduct(id, name) {
+        Swal.fire({
+            title: 'Delete Product?',
+            text: `Are you sure you want to delete '${name}'?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, delete product'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const res = await fetchJson(`{{ route('products.destroy', $product) }}`, { method: 'DELETE' });
+                    if (res.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted',
+                            text: res.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = "{{ route('products.index') }}";
+                        });
+                    } else {
+                        Swal.fire('Error', res.message || 'Failed to delete product.', 'error');
+                    }
+                } catch (err) {
+                    Swal.fire('Error', 'Failed to delete product.', 'error');
+                }
+            }
+        });
     }
 
     document.addEventListener('DOMContentLoaded', calculateMargin);

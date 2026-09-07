@@ -319,6 +319,7 @@
     </script>
 
     <!-- Firebase Web SDK Integration -->
+    @vite(['resources/js/app.js'])
     <script type="module" src="{{ asset('js/firebase-init.js') }}"></script>
 
     @stack('scripts')
