@@ -5,12 +5,12 @@
 @section('content')
 <div class="container-fluid p-0" style="max-width: 1100px;">
     <!-- Top Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <div>
             <h3 class="fw-bold text-dark mb-1">Process Product Return</h3>
             <p class="text-muted mb-0">Search sales invoice, select items and quantities to refund, and automatically restock inventory.</p>
         </div>
-        <a href="{{ route('returns.index') }}" class="btn btn-outline-secondary">
+        <a href="{{ route('returns.index') }}" class="btn btn-outline-secondary rounded-pill px-3">
             <i class="bi bi-arrow-left me-1"></i> Back to Returns
         </a>
     </div>
@@ -34,7 +34,7 @@
                            placeholder="e.g. INV-2026-000001"
                            value="{{ $prefillInvoice }}"
                            autocomplete="off">
-                    <button type="button" class="btn btn-primary px-4 fw-bold" onclick="executeInvoiceLookup()" id="searchInvoiceBtn">
+                    <button type="button" class="btn btn-primary px-3 px-sm-4 fw-bold text-nowrap" onclick="executeInvoiceLookup()" id="searchInvoiceBtn">
                         <i class="bi bi-search me-1"></i> Lookup Invoice
                     </button>
                 </div>
@@ -60,14 +60,14 @@
 
             <!-- Invoice Overview Card -->
             <x-card class="shadow-sm border-0 mb-4 bg-light">
-                <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 border-bottom pb-3 mb-3">
                     <div>
                         <span class="badge bg-primary text-uppercase px-2.5 py-1 mb-1">Active Invoice</span>
                         <h4 class="fw-bold font-monospace text-dark mb-0" id="invDisplayNo">
                             {{ $initialData['sale']->invoice_no ?? '' }}
                         </h4>
                     </div>
-                    <div class="text-end">
+                    <div class="text-sm-end">
                         <small class="text-muted d-block">Invoice Date & Time</small>
                         <span class="fw-semibold text-dark" id="invDisplayDate">
                             {{ isset($initialData['sale']) ? $initialData['sale']->sale_date->format('M d, Y H:i') : '' }}

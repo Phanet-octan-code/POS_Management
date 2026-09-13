@@ -14,7 +14,7 @@
     <!-- Financial KPI Summary Cards -->
     <div class="row g-3 mb-4">
         <!-- Revenue -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Sales Revenue"
                 value="${{ number_format($summary['total_revenue'], 2) }}"
@@ -24,7 +24,7 @@
             />
         </div>
         <!-- COGS -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Product Cost (COGS)"
                 value="${{ number_format($summary['total_cogs'], 2) }}"
@@ -34,7 +34,7 @@
             />
         </div>
         <!-- Gross Profit -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Gross Profit"
                 value="${{ number_format($summary['gross_profit'], 2) }}"
@@ -44,7 +44,7 @@
             />
         </div>
         <!-- Net Profit -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Net Profit"
                 value="${{ number_format($summary['net_profit'], 2) }}"
@@ -58,12 +58,12 @@
 
     <!-- Data Table: Itemized Transaction Profitability -->
     <x-card>
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
             <div>
                 <h5 class="fw-bold text-dark mb-0">Itemized Transaction Profitability</h5>
                 <small class="text-muted">Calculates exact Gross Profit and margin contribution for each sale.</small>
             </div>
-            <div class="badge bg-light text-dark border px-3 py-1.5">
+            <div class="badge bg-light text-dark border px-3 py-1.5 align-self-start align-self-sm-auto">
                 Formula: <span class="text-primary fw-bold">Gross Profit</span> = Revenue - COGS
             </div>
         </div>

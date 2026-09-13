@@ -17,21 +17,21 @@
 
     <!-- Filter & Search Toolbar -->
     <x-card class="mb-4">
-        <form method="GET" action="{{ route('brands.index') }}" class="row g-3 align-items-center">
-            <div class="col-md-7 col-lg-8">
+        <form method="GET" action="{{ route('brands.index') }}" class="row g-2 g-md-3 align-items-center">
+            <div class="col-12 col-md-7 col-lg-8">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
                     <input type="text" name="search" class="form-control border-start-0" placeholder="Search brands by name, slug or description..." value="{{ request('search') }}">
                 </div>
             </div>
-            <div class="col-md-3 col-lg-2">
+            <div class="col-6 col-md-3 col-lg-2">
                 <select name="status" class="form-select" onchange="this.form.submit()">
                     <option value="">All Statuses</option>
                     <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Active</option>
                     <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inactive</option>
                 </select>
             </div>
-            <div class="col-md-2 col-lg-2 d-flex gap-2">
+            <div class="col-6 col-md-2 col-lg-2 d-flex gap-2">
                 <button type="submit" class="btn btn-dark w-100"><i class="bi bi-funnel me-1"></i> Filter</button>
                 @if(request()->hasAny(['search', 'status']))
                     <a href="{{ route('brands.index') }}" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
@@ -43,7 +43,7 @@
     <!-- Brands Table -->
     <x-card>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle text-nowrap mb-0">
                 <thead class="table-light text-uppercase small fw-bold">
                     <tr>
                         <th>Brand</th>
@@ -104,6 +104,10 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
+                                <form id="delete-brand-form-{{ $brand->id }}" action="{{ route('brands.destroy', $brand) }}" method="POST" class="d-none">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
                             </td>
                         </tr>
                     @empty
@@ -123,7 +127,7 @@
         </div>
 
         @if($brands->hasPages())
-            <div class="p-3 border-top d-flex justify-content-end">
+            <div class="p-3 border-top">
                 {{ $brands->links() }}
             </div>
         @endif
@@ -267,16 +271,29 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetchJson(`/brands/${id}`, { method: 'DELETE' });
-                    if (res.success) {
+                    const res = await fetchJson(`/brands/${id}`, { 
+                        method: 'DELETE',
+                        body: JSON.stringify({ id: id })
+                    });
+                    if (res && res.success) {
                         const row = document.getElementById(`brand-row-${id}`);
                         if (row) row.remove();
-                        Toast.fire({ icon: 'success', title: res.message });
+                        Toast.fire({ icon: 'success', title: res.message || 'Brand deleted successfully.' });
                     } else {
-                        Swal.fire('Error', res.message || 'Failed to delete brand.', 'error');
+                        const deleteForm = document.getElementById(`delete-brand-form-${id}`);
+                        if (deleteForm) {
+                            deleteForm.submit();
+                        } else {
+                            Swal.fire('Error', (res && res.message) ? res.message : 'Failed to delete brand.', 'error');
+                        }
                     }
                 } catch (err) {
-                    Swal.fire('Error', 'Failed to delete brand.', 'error');
+                    const deleteForm = document.getElementById(`delete-brand-form-${id}`);
+                    if (deleteForm) {
+                        deleteForm.submit();
+                    } else {
+                        Swal.fire('Error', 'Failed to delete brand.', 'error');
+                    }
                 }
             }
         });

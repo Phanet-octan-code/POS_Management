@@ -45,10 +45,11 @@ class ReturnController extends Controller
         $returns = $query->latest('return_date')->paginate(15)->withQueryString();
 
         // Summary Statistics
-        $totalRefundsSum = (float) (clone $query)->sum('total_refund');
+        $totalRefundAmount = (float) (clone $query)->sum('total_refund');
+        $totalRefundsSum = $totalRefundAmount;
         $totalReturnsCount = (clone $query)->count();
 
-        return view('returns.index', compact('returns', 'totalRefundsSum', 'totalReturnsCount'));
+        return view('returns.index', compact('returns', 'totalRefundAmount', 'totalRefundsSum', 'totalReturnsCount'));
     }
 
     /**

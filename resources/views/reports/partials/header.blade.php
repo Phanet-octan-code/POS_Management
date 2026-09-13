@@ -27,39 +27,39 @@
 
     <!-- 7 Reports Sub-Navigation Tabs -->
     <div class="card shadow-sm border-0 mb-4 rounded-4">
-        <div class="card-body p-2">
-            <ul class="nav nav-pills nav-fill flex-column flex-sm-row gap-1">
-                <li class="nav-item">
+        <div class="card-body p-2 scroll-x-touch">
+            <ul class="nav nav-pills flex-nowrap gap-1">
+                <li class="nav-item text-nowrap">
                     <a class="nav-link py-2 px-3 fw-semibold {{ request()->routeIs('reports.sales') || request()->routeIs('reports.index') ? 'active bg-primary shadow-sm text-white' : 'text-dark' }}" href="{{ route('reports.sales', request()->only('date_filter', 'start_date', 'end_date')) }}">
                         <i class="bi bi-receipt me-1"></i> 1. Sales Report
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item text-nowrap">
                     <a class="nav-link py-2 px-3 fw-semibold {{ request()->routeIs('reports.purchases') ? 'active bg-primary shadow-sm text-white' : 'text-dark' }}" href="{{ route('reports.purchases', request()->only('date_filter', 'start_date', 'end_date')) }}">
                         <i class="bi bi-bag-check me-1"></i> 2. Purchase Report
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item text-nowrap">
                     <a class="nav-link py-2 px-3 fw-semibold {{ request()->routeIs('reports.profit') ? 'active bg-primary shadow-sm text-white' : 'text-dark' }}" href="{{ route('reports.profit', request()->only('date_filter', 'start_date', 'end_date')) }}">
                         <i class="bi bi-graph-up-arrow me-1"></i> 3. Profit Report
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item text-nowrap">
                     <a class="nav-link py-2 px-3 fw-semibold {{ request()->routeIs('reports.inventory') ? 'active bg-primary shadow-sm text-white' : 'text-dark' }}" href="{{ route('reports.inventory', request()->only('date_filter', 'start_date', 'end_date')) }}">
                         <i class="bi bi-box-seam me-1"></i> 4. Inventory Report
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item text-nowrap">
                     <a class="nav-link py-2 px-3 fw-semibold {{ request()->routeIs('reports.customers') ? 'active bg-primary shadow-sm text-white' : 'text-dark' }}" href="{{ route('reports.customers', request()->only('date_filter', 'start_date', 'end_date')) }}">
                         <i class="bi bi-people me-1"></i> 5. Customer Report
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item text-nowrap">
                     <a class="nav-link py-2 px-3 fw-semibold {{ request()->routeIs('reports.suppliers') ? 'active bg-primary shadow-sm text-white' : 'text-dark' }}" href="{{ route('reports.suppliers', request()->only('date_filter', 'start_date', 'end_date')) }}">
                         <i class="bi bi-truck me-1"></i> 6. Supplier Report
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item text-nowrap">
                     <a class="nav-link py-2 px-3 fw-semibold {{ request()->routeIs('reports.expenses') ? 'active bg-primary shadow-sm text-white' : 'text-dark' }}" href="{{ route('reports.expenses', request()->only('date_filter', 'start_date', 'end_date')) }}">
                         <i class="bi bi-wallet2 me-1"></i> 7. Expense Report
                     </a>
@@ -78,27 +78,29 @@
             <!-- Quick Date Filter Presets -->
             <div class="col-12 col-xl-5">
                 <label class="form-label small fw-semibold text-muted mb-1 d-block">Period Quick Presets</label>
-                <div class="btn-group w-100 p-1 bg-light rounded-pill border" role="group">
-                    <a href="{{ request()->fullUrlWithQuery(['date_filter' => 'today', 'start_date' => null, 'end_date' => null]) }}"
-                       class="btn btn-sm rounded-pill px-2.5 {{ $curFilter === 'today' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}">
-                        Today
-                    </a>
-                    <a href="{{ request()->fullUrlWithQuery(['date_filter' => 'yesterday', 'start_date' => null, 'end_date' => null]) }}"
-                       class="btn btn-sm rounded-pill px-2.5 {{ $curFilter === 'yesterday' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}">
-                        Yesterday
-                    </a>
-                    <a href="{{ request()->fullUrlWithQuery(['date_filter' => 'this_week', 'start_date' => null, 'end_date' => null]) }}"
-                       class="btn btn-sm rounded-pill px-2.5 {{ $curFilter === 'this_week' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}">
-                        This Week
-                    </a>
-                    <a href="{{ request()->fullUrlWithQuery(['date_filter' => 'this_month', 'start_date' => null, 'end_date' => null]) }}"
-                       class="btn btn-sm rounded-pill px-2.5 {{ $curFilter === 'this_month' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}">
-                        This Month
-                    </a>
-                    <a href="{{ request()->fullUrlWithQuery(['date_filter' => 'this_year', 'start_date' => null, 'end_date' => null]) }}"
-                       class="btn btn-sm rounded-pill px-2.5 {{ $curFilter === 'this_year' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}">
-                        This Year
-                    </a>
+                <div class="scroll-x-touch pb-1">
+                    <div class="btn-group w-100 p-1 bg-light rounded-pill border" role="group" style="min-width: 380px;">
+                        <a href="{{ request()->fullUrlWithQuery(['date_filter' => 'today', 'start_date' => null, 'end_date' => null]) }}"
+                           class="btn btn-sm rounded-pill px-2.5 {{ $curFilter === 'today' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}">
+                            Today
+                        </a>
+                        <a href="{{ request()->fullUrlWithQuery(['date_filter' => 'yesterday', 'start_date' => null, 'end_date' => null]) }}"
+                           class="btn btn-sm rounded-pill px-2.5 {{ $curFilter === 'yesterday' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}">
+                            Yesterday
+                        </a>
+                        <a href="{{ request()->fullUrlWithQuery(['date_filter' => 'this_week', 'start_date' => null, 'end_date' => null]) }}"
+                           class="btn btn-sm rounded-pill px-2.5 {{ $curFilter === 'this_week' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}">
+                            This Week
+                        </a>
+                        <a href="{{ request()->fullUrlWithQuery(['date_filter' => 'this_month', 'start_date' => null, 'end_date' => null]) }}"
+                           class="btn btn-sm rounded-pill px-2.5 {{ $curFilter === 'this_month' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}">
+                            This Month
+                        </a>
+                        <a href="{{ request()->fullUrlWithQuery(['date_filter' => 'this_year', 'start_date' => null, 'end_date' => null]) }}"
+                           class="btn btn-sm rounded-pill px-2.5 {{ $curFilter === 'this_year' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}">
+                            This Year
+                        </a>
+                    </div>
                 </div>
             </div>
 

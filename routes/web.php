@@ -111,12 +111,14 @@ Route::middleware(['auth', 'active_user'])->group(function () {
     // 4. Categories: Requires 'categories' permission
     Route::middleware('permission:categories')->group(function () {
         Route::patch('categories/{category}/status', [CategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
+        Route::delete('categories', [CategoryController::class, 'destroyAny'])->name('categories.destroy-any');
         Route::resource('categories', CategoryController::class)->except(['create', 'show', 'edit']);
     });
 
     // 5. Brands: Requires 'brands' permission
     Route::middleware('permission:brands')->group(function () {
         Route::patch('brands/{brand}/status', [BrandController::class, 'toggleStatus'])->name('brands.toggle-status');
+        Route::delete('brands', [BrandController::class, 'destroyAny'])->name('brands.destroy-any');
         Route::resource('brands', BrandController::class)->except(['create', 'show', 'edit']);
     });
 
@@ -132,18 +134,21 @@ Route::middleware(['auth', 'active_user'])->group(function () {
     // 7. Customers: Requires 'customers' permission
     Route::middleware('permission:customers')->group(function () {
         Route::patch('customers/{customer}/status', [CustomerController::class, 'toggleStatus'])->name('customers.toggle-status');
+        Route::delete('customers', [CustomerController::class, 'destroyAny'])->name('customers.destroy-any');
         Route::resource('customers', CustomerController::class)->except(['create', 'edit']);
     });
 
     // 8. Suppliers: Requires 'suppliers' permission
     Route::middleware('permission:suppliers')->group(function () {
         Route::patch('suppliers/{supplier}/status', [SupplierController::class, 'toggleStatus'])->name('suppliers.toggle-status');
+        Route::delete('suppliers', [SupplierController::class, 'destroyAny'])->name('suppliers.destroy-any');
         Route::resource('suppliers', SupplierController::class)->except(['create', 'edit']);
     });
 
     // 9. Purchases: Requires 'purchases' permission
     Route::middleware('permission:purchases')->group(function () {
         Route::get('purchases/{purchase}/invoice', [PurchaseController::class, 'invoice'])->name('purchases.invoice');
+        Route::delete('purchases', [PurchaseController::class, 'destroyAny'])->name('purchases.destroy-any');
         Route::resource('purchases', PurchaseController::class);
     });
 
@@ -165,6 +170,7 @@ Route::middleware(['auth', 'active_user'])->group(function () {
 
     // 11. Expenses: Requires 'expenses' permission
     Route::middleware('permission:expenses')->group(function () {
+        Route::delete('expenses', [ExpenseController::class, 'destroyAny'])->name('expenses.destroy-any');
         Route::resource('expenses', ExpenseController::class)->except(['create', 'edit']);
     });
 
@@ -184,7 +190,9 @@ Route::middleware(['auth', 'active_user'])->group(function () {
     Route::middleware('permission:users')->group(function () {
         Route::patch('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
         Route::post('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
+        Route::delete('users', [UserController::class, 'destroyAny'])->name('users.destroy-any');
         Route::resource('users', UserController::class)->except(['create', 'edit']);
+        Route::delete('roles', [RoleController::class, 'destroyAny'])->name('roles.destroy-any');
         Route::resource('roles', RoleController::class)->except(['create', 'edit']);
     });
 

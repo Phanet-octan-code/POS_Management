@@ -81,7 +81,7 @@
     <x-card class="mb-4">
         <form method="GET" action="{{ route('purchases.index') }}" class="row g-2 align-items-center">
             <!-- Search Keyword -->
-            <div class="col-md-3">
+            <div class="col-12 col-md-3">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
                     <input type="text" name="search" class="form-control border-start-0" placeholder="Reference #, notes, supplier..." value="{{ request('search') }}">
@@ -89,7 +89,7 @@
             </div>
 
             <!-- Supplier Filter -->
-            <div class="col-md-2">
+            <div class="col-6 col-md-2">
                 <select name="supplier_id" class="form-select">
                     <option value="">All Suppliers</option>
                     @foreach ($suppliers as $sup)
@@ -101,7 +101,7 @@
             </div>
 
             <!-- Goods Status Filter -->
-            <div class="col-md-2">
+            <div class="col-6 col-md-2">
                 <select name="status" class="form-select">
                     <option value="">All Order Statuses</option>
                     <option value="received" {{ request('status') === 'received' ? 'selected' : '' }}>Received</option>
@@ -111,7 +111,7 @@
             </div>
 
             <!-- Payment Status Filter -->
-            <div class="col-md-2">
+            <div class="col-6 col-md-2">
                 <select name="payment_status" class="form-select">
                     <option value="">All Payment Statuses</option>
                     <option value="paid" {{ request('payment_status') === 'paid' ? 'selected' : '' }}>Paid</option>
@@ -121,12 +121,12 @@
             </div>
 
             <!-- Date Range -->
-            <div class="col-md-2">
+            <div class="col-6 col-md-2">
                 <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}" title="Date From">
             </div>
 
             <!-- Actions -->
-            <div class="col-md-1 d-flex gap-1">
+            <div class="col-12 col-md-1 d-flex gap-1">
                 <button type="submit" class="btn btn-dark w-100" title="Apply Filters"><i class="bi bi-funnel"></i></button>
                 @if(request()->hasAny(['search', 'supplier_id', 'status', 'payment_status', 'date_from', 'date_to']))
                     <a href="{{ route('purchases.index') }}" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
@@ -138,7 +138,7 @@
     <!-- Purchases Table -->
     <x-card>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle text-nowrap mb-0">
                 <thead class="table-light text-uppercase small fw-bold">
                     <tr>
                         <th>Reference #</th>
@@ -248,8 +248,7 @@
         </div>
 
         @if($purchases->hasPages())
-            <div class="p-3 border-top d-flex justify-content-between align-items-center">
-                <small class="text-muted">Showing {{ $purchases->firstItem() }} to {{ $purchases->lastItem() }} of {{ $purchases->total() }} purchase orders</small>
+            <div class="p-3 border-top">
                 {{ $purchases->links() }}
             </div>
         @endif

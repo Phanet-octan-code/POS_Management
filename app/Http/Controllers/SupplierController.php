@@ -107,7 +107,7 @@ class SupplierController extends Controller
         $statusStr = $supplier->is_active ? 'activated' : 'deactivated';
         ActivityLoggerService::log('supplier.status_updated', "{$statusStr} supplier '{$supplier->name}'", $supplier, [], 'suppliers');
 
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'is_active' => $supplier->is_active,
@@ -133,7 +133,7 @@ class SupplierController extends Controller
 
         ActivityLoggerService::log('supplier.delete', "deleted supplier '{$name}'", null, [], 'suppliers');
 
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => $msg,
@@ -141,5 +141,49 @@ class SupplierController extends Controller
         }
 
         return back()->with('success', $msg);
+    }
+
+    /**
+     * Handle generic DELETE /suppliers collection endpoint.
+     */
+    public function destroyAny(Request $request): RedirectResponse|JsonResponse
+    {
+        $id = $request->input('id') ?? $request->input('supplier_id') ?? $request->query('id');
+
+        // Handle bulk delete if array of ids provided
+        if ($request->has('ids') && is_array($request->input('ids'))) {
+            $deletedCount = 0;
+            foreach ($request->input('ids') as $sid) {
+                $s = Supplier::find($sid);
+                if ($s) {
+                    if ($s->purchases()->count() > 0) {
+                        $s->delete();
+                    } else {
+                        $s->forceDelete();
+                    }
+                    $deletedCount++;
+                }
+            }
+            ActivityLoggerService::log('supplier.bulk_delete', "Bulk deleted {$deletedCount} suppliers");
+            $msg = "{$deletedCount} suppliers deleted successfully.";
+            if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+                return response()->json(['success' => true, 'message' => $msg]);
+            }
+            return back()->with('success', $msg);
+        }
+
+        if ($id) {
+            $supplier = Supplier::find($id);
+            if ($supplier) {
+                return $this->destroy($supplier);
+            }
+        }
+
+        $msg = 'No supplier specified or supplier not found.';
+        if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+            return response()->json(['success' => false, 'message' => $msg], 404);
+        }
+
+        return back()->with('error', $msg);
     }
 }

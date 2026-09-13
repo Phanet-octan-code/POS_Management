@@ -152,6 +152,28 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
+        .status-indicator-dot {
+            width: 7px;
+            height: 7px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+            animation: statusPulse 2s infinite;
+        }
+
+        @keyframes statusPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
         .btn-pos-quick {
             background: linear-gradient(135deg, #10b981, #059669);
             color: #ffffff !important;
@@ -218,6 +240,115 @@
         .table td {
             font-size: 0.9rem;
         }
+
+        /* ----------------- Responsive Utilities ----------------- */
+        .table-responsive {
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .scroll-x-touch {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        .scroll-x-touch::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .scroll-x-touch::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 575.98px) {
+            .card-body {
+                padding: 1rem !important;
+            }
+            .card-header {
+                padding: 0.85rem 1rem !important;
+            }
+            .pos-main > main {
+                padding: 0.75rem !important;
+            }
+            .pos-sidebar {
+                width: 260px;
+            }
+        }
+
+        /* ----------------- Global Pagination & Defensive SVG Sizing ----------------- */
+        .pagination svg,
+        nav[role="navigation"] svg,
+        nav.d-flex svg {
+            width: 1.1rem !important;
+            height: 1.1rem !important;
+            max-width: 1.1rem !important;
+            max-height: 1.1rem !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+
+        nav[role="navigation"] p,
+        nav.d-flex p {
+            margin-bottom: 0 !important;
+        }
+
+        .pagination {
+            margin-bottom: 0;
+            gap: 4px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .page-item .page-link {
+            border-radius: 8px !important;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            font-weight: 500;
+            font-size: 0.85rem;
+            padding: 0.38rem 0.72rem;
+            background-color: #ffffff;
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            height: 34px;
+            text-decoration: none;
+        }
+
+        .page-item .page-link:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            color: var(--pos-primary);
+        }
+
+        .page-item.active .page-link {
+            background: var(--pos-primary) !important;
+            border-color: var(--pos-primary) !important;
+            color: #ffffff !important;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(67, 56, 202, 0.25);
+        }
+
+        .page-item.disabled .page-link {
+            color: #94a3b8;
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Purple Subtle Badge Utility */
+        .bg-purple-subtle {
+            background-color: #f3e8ff !important;
+        }
+        .text-purple {
+            color: #7e22ce !important;
+        }
+        .border-purple-subtle {
+            border-color: #e9d5ff !important;
+        }
     </style>
 
     @stack('styles')
@@ -277,11 +408,21 @@
             options.headers = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': csrfToken,
                 ...(options.headers || {})
             };
             const response = await fetch(url, options);
-            return response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                data = { success: response.ok, message: response.statusText };
+            }
+            if (!response.ok && data && typeof data === 'object' && data.success !== false) {
+                data.success = false;
+            }
+            return data;
         }
 
         // Global Toast Notification
@@ -301,20 +442,50 @@
             const closeBtn = document.getElementById('sidebarCloseBtn');
 
             function openSidebar() {
-                sidebar.classList.add('show');
-                backdrop.classList.add('show');
+                if (sidebar) sidebar.classList.add('show');
+                if (backdrop) backdrop.classList.add('show');
                 document.body.style.overflow = 'hidden';
             }
 
             function closeSidebar() {
-                sidebar.classList.remove('show');
-                backdrop.classList.remove('show');
+                if (sidebar) sidebar.classList.remove('show');
+                if (backdrop) backdrop.classList.remove('show');
                 document.body.style.overflow = '';
             }
 
             if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
             if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
             if (backdrop) backdrop.addEventListener('click', closeSidebar);
+
+            // Close on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && sidebar && sidebar.classList.contains('show')) {
+                    closeSidebar();
+                }
+            });
+
+            // Auto-close on mobile when clicking a navigation link
+            if (sidebar) {
+                sidebar.querySelectorAll('.nav-item-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (window.innerWidth < 992) {
+                            closeSidebar();
+                        }
+                    });
+                });
+            }
+
+            // Global Search Shortcut (Ctrl+K or Cmd+K)
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                    e.preventDefault();
+                    const searchInput = document.querySelector('input[name="search"]');
+                    if (searchInput) {
+                        searchInput.focus();
+                        searchInput.select();
+                    }
+                }
+            });
         });
     </script>
 

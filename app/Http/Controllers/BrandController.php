@@ -111,7 +111,7 @@ class BrandController extends Controller
         $statusStr = $brand->is_active ? 'activated' : 'deactivated';
         ActivityLoggerService::log('brand.status_updated', "Brand '{$brand->name}' was {$statusStr}", $brand);
 
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'is_active' => $brand->is_active,
@@ -128,7 +128,7 @@ class BrandController extends Controller
         $productCount = $brand->products()->count();
         if ($productCount > 0) {
             $message = "Cannot delete brand '{$brand->name}' because it is assigned to {$productCount} product(s). Please reassign them first.";
-            if (request()->ajax()) {
+            if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
                 return response()->json(['success' => false, 'message' => $message], 422);
             }
             return back()->with('error', $message);
@@ -142,7 +142,7 @@ class BrandController extends Controller
         $brand->delete();
         ActivityLoggerService::log('brand.deleted', "Deleted brand {$name}");
 
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => "Brand '{$name}' deleted successfully.",
@@ -150,5 +150,51 @@ class BrandController extends Controller
         }
 
         return back()->with('success', "Brand '{$name}' deleted successfully.");
+    }
+
+    /**
+     * Handle generic DELETE /brands collection endpoint.
+     */
+    public function destroyAny(Request $request): RedirectResponse|JsonResponse
+    {
+        $id = $request->input('id') ?? $request->input('brand_id') ?? $request->query('id');
+
+        // Handle bulk delete if array of ids provided
+        if ($request->has('ids') && is_array($request->input('ids'))) {
+            $deletedCount = 0;
+            $skippedCount = 0;
+            foreach ($request->input('ids') as $brandId) {
+                $b = Brand::find($brandId);
+                if ($b && $b->products()->count() === 0) {
+                    if ($b->logo && Storage::disk('public')->exists($b->logo)) {
+                        Storage::disk('public')->delete($b->logo);
+                    }
+                    $b->delete();
+                    $deletedCount++;
+                } else {
+                    $skippedCount++;
+                }
+            }
+            ActivityLoggerService::log('brand.bulk_delete', "Bulk deleted {$deletedCount} brands");
+            $msg = "{$deletedCount} brands deleted successfully." . ($skippedCount > 0 ? " ({$skippedCount} skipped due to assigned products)" : "");
+            if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+                return response()->json(['success' => true, 'message' => $msg]);
+            }
+            return back()->with('success', $msg);
+        }
+
+        if ($id) {
+            $brand = Brand::find($id);
+            if ($brand) {
+                return $this->destroy($brand);
+            }
+        }
+
+        $msg = 'No brand specified or brand not found.';
+        if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+            return response()->json(['success' => false, 'message' => $msg], 404);
+        }
+
+        return back()->with('error', $msg);
     }
 }

@@ -4,23 +4,25 @@
 
 @section('content')
 <div class="container-fluid p-0">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <div>
             <h3 class="fw-bold text-dark mb-1">Reports & Analytics</h3>
             <p class="text-muted mb-0">Financial statements, sales metrics, and top-performing products.</p>
         </div>
         <!-- Date Filter Form -->
-        <form method="GET" action="{{ route('reports.index') }}" class="d-flex align-items-center gap-2">
-            <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $startDate }}">
-            <span class="text-muted">to</span>
-            <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $endDate }}">
-            <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-filter"></i> Apply</button>
+        <form method="GET" action="{{ route('reports.index') }}" class="d-flex flex-wrap align-items-center gap-2 w-100 w-md-auto">
+            <div class="d-flex align-items-center gap-2 flex-grow-1 flex-sm-grow-0">
+                <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $startDate }}">
+                <span class="text-muted small">to</span>
+                <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $endDate }}">
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary flex-shrink-0"><i class="bi bi-filter"></i> Apply</button>
         </form>
     </div>
 
     <!-- Financial KPIs -->
     <div class="row g-3 mb-4">
-        <div class="col-md-3">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Gross Revenue"
                 value="${{ number_format($metrics['total_sales'], 2) }}"
@@ -29,7 +31,7 @@
                 subtext="{{ $metrics['total_orders'] }} orders"
             />
         </div>
-        <div class="col-md-3">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Cost of Goods (COGS)"
                 value="${{ number_format($metrics['cogs'], 2) }}"
@@ -38,7 +40,7 @@
                 subtext="Direct inventory costs"
             />
         </div>
-        <div class="col-md-3">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Operating Expenses"
                 value="${{ number_format($metrics['total_expenses'], 2) }}"
@@ -47,7 +49,7 @@
                 subtext="Recorded store overhead"
             />
         </div>
-        <div class="col-md-3">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Net Profit"
                 value="${{ number_format($metrics['net_profit'], 2) }}"

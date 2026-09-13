@@ -1,45 +1,70 @@
 <!-- Top Navbar -->
 <header class="pos-navbar bg-white border-bottom border-light-subtle sticky-top">
-    <div class="container-fluid px-3 px-lg-4 py-2.5 d-flex align-items-center justify-content-between">
-        <!-- Left: Mobile Sidebar Toggle & Page Info -->
-        <div class="d-flex align-items-center gap-3">
-            <button class="btn btn-light d-lg-none p-2 rounded-3 border" id="sidebarToggleBtn" aria-label="Toggle Sidebar">
+    <div class="container-fluid px-3 px-lg-4 py-2 d-flex align-items-center justify-content-between gap-3">
+        <!-- Left: Mobile Sidebar Toggle & Store Identity Card -->
+        <div class="d-flex align-items-center gap-2.5 flex-shrink-0">
+            <!-- Mobile Sidebar Toggle (< lg) -->
+            <button class="btn btn-light d-lg-none p-1.5 rounded-3 border flex-shrink-0" id="sidebarToggleBtn" aria-label="Toggle Sidebar">
                 <i class="bi bi-list fs-5"></i>
             </button>
-            <div class="d-none d-sm-block">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1 rounded-pill fw-semibold">
-                        <i class="bi bi-broadcast me-1"></i> Register Ready
+
+            <!-- Store Brand Info -->
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-3 bg-primary-subtle text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 34px; height: 34px;">
+                    <i class="bi bi-shop fs-6"></i>
+                </div>
+                <div class="d-flex flex-column" style="line-height: 1.15;">
+                    <span class="fw-bold text-dark text-truncate" style="max-width: 170px; font-size: 0.9rem;" title="{{ $appSettings['store_name'] ?? 'OmniPOS' }}">
+                        {{ $appSettings['store_name'] ?? 'OmniPOS' }}
                     </span>
-                    <span class="text-muted small d-none d-md-inline">|</span>
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 rounded-pill fw-semibold d-none d-lg-inline-flex align-items-center" title="Google Firebase Project: pos-management-88866">
-                        <i class="bi bi-fire text-warning me-1"></i> Firebase Connected
-                    </span>
-                    <span class="text-muted small d-none d-md-inline">|</span>
-                    <span class="fw-semibold text-secondary small d-none d-md-inline"><i class="bi bi-shop me-1 text-primary"></i>{{ $appSettings['store_name'] ?? 'OmniPOS Store' }}</span>
-                    <span class="text-muted small d-none d-md-inline">|</span>
-                    <span class="text-muted small d-none d-md-inline" id="navbarClock">{{ date('l, M d, Y') }}</span>
+                    <div class="d-flex align-items-center gap-1.5 mt-0.5">
+                        <span class="status-indicator-dot"></span>
+                        <span class="text-success fw-semibold" style="font-size: 0.7rem;">Register Ready</span>
+                    </div>
                 </div>
             </div>
+
+            <!-- Cloud Sync Pill (>= xl) -->
+            <span class="badge bg-light text-secondary border rounded-pill px-2.5 py-1 d-none d-xl-inline-flex align-items-center gap-1 text-nowrap ms-1" title="Realtime Firebase Cloud Synced">
+                <i class="bi bi-cloud-check-fill text-primary" style="font-size: 0.8rem;"></i>
+                <span style="font-size: 0.72rem;" class="fw-medium">Synced</span>
+            </span>
         </div>
 
-        <!-- Center: Quick Global Search Input -->
-        <div class="d-none d-md-block flex-grow-1 mx-4" style="max-width: 400px;">
-            <div class="input-group input-group-sm">
-                <span class="input-group-text bg-light border-end-0 text-muted rounded-start-pill ps-3">
-                    <i class="bi bi-search"></i>
-                </span>
-                <input type="text" class="form-control bg-light border-start-0 rounded-end-pill py-2" placeholder="Search orders, SKU, customers...">
+        <!-- Center: Prominent Centered Search Input (>= md) -->
+        <div class="d-none d-md-block flex-grow-1 mx-3" style="max-width: 440px;">
+            <form method="GET" action="{{ route('products.index') }}" class="m-0">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light border-end-0 text-muted rounded-start-pill ps-3">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" name="search" class="form-control bg-light border-start-0 border-end-0 py-2" placeholder="Search orders, SKU, customers...">
+                    <span class="input-group-text bg-light border-start-0 text-muted rounded-end-pill pe-2.5">
+                        <kbd class="bg-white border text-secondary px-1.5 py-0.5 rounded small" style="font-size: 0.65rem; font-family: inherit;">Ctrl K</kbd>
+                    </span>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right: Date, POS Quick Launch, Notifications & User Dropdown -->
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+            <!-- Mobile Search Toggle Button (< md) -->
+            <button class="btn btn-light rounded-pill p-2 border d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearchDrawer" aria-expanded="false" aria-controls="mobileSearchDrawer" aria-label="Toggle Search">
+                <i class="bi bi-search text-secondary"></i>
+            </button>
+
+            <!-- Clean Live Date Chip (>= xxl) -->
+            <div class="d-none d-xxl-flex align-items-center gap-1.5 text-secondary px-2.5 py-1.5 bg-light rounded-pill border" style="font-size: 0.76rem;">
+                <i class="bi bi-calendar3 text-primary"></i>
+                <span class="fw-medium" id="navbarClock">{{ date('D, M j, Y') }}</span>
             </div>
-        </div>
 
-        <!-- Right: POS Quick Launch, Notifications & User Dropdown -->
-        <div class="d-flex align-items-center gap-2.5">
             <!-- POS Quick Launch Button -->
             @if (auth()->user()?->hasRole(['admin', 'cashier']))
-                <a href="{{ route('pos.index') }}" class="btn btn-pos-quick d-flex align-items-center gap-2 rounded-pill px-3 py-1.5 text-decoration-none">
+                <a href="{{ route('pos.index') }}" class="btn btn-pos-quick d-flex align-items-center gap-1.5 rounded-pill px-3 py-1.5 text-decoration-none shadow-xs">
                     <i class="bi bi-cart-plus-fill"></i>
                     <span class="fw-bold d-none d-sm-inline">POS Register</span>
+                    <span class="fw-bold d-inline d-sm-none" style="font-size: 0.78rem;">POS</span>
                 </a>
             @endif
 
@@ -53,7 +78,7 @@
                         </span>
                     @endif
                 </button>
-                <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-0" style="width: 360px; max-width: 92vw;" aria-labelledby="notificationDropdown">
+                <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-0" style="width: 360px; max-width: calc(100vw - 20px);" aria-labelledby="notificationDropdown">
                     <div class="p-3 border-bottom d-flex align-items-center justify-content-between bg-light rounded-top-4">
                         <div class="d-flex align-items-center gap-2">
                             <h6 class="fw-bold mb-0 text-dark">Notifications</h6>
@@ -120,11 +145,11 @@
 
             <!-- User Menu Dropdown -->
             <div class="dropdown">
-                <button class="btn btn-light d-flex align-items-center gap-2 rounded-pill px-2.5 py-1.5 border" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-light d-flex align-items-center gap-1.5 gap-sm-2 rounded-pill px-2 px-sm-2.5 py-1.5 border" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="user-avatar-circle rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.85rem;">
                         {{ strtoupper(substr(auth()->user()?->name ?? 'A', 0, 1)) }}
                     </div>
-                    <div class="text-start d-none d-sm-block me-1">
+                    <div class="text-start d-none d-md-block me-1">
                         <span class="small fw-bold d-block text-dark lh-1">{{ auth()->user()?->name ?? 'Staff' }}</span>
                         <span class="user-role-badge badge bg-primary-subtle text-primary border border-primary-subtle px-1.5 py-0.5" style="font-size: 0.65rem;">
                             {{ auth()->user()?->primaryRoleName() ?? 'User' }}
@@ -132,7 +157,7 @@
                     </div>
                     <i class="bi bi-chevron-down text-muted small"></i>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2" style="min-width: 220px;" aria-labelledby="userMenuBtn">
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2" style="min-width: 220px; max-width: calc(100vw - 20px);" aria-labelledby="userMenuBtn">
                     <li class="px-3 py-2 border-bottom mb-2">
                         <div class="fw-bold text-dark">{{ auth()->user()?->name }}</div>
                         <small class="text-muted d-block text-truncate">{{ auth()->user()?->email }}</small>
@@ -170,5 +195,18 @@
                 </ul>
             </div>
         </div>
+    </div>
+
+    <!-- Collapsible Mobile Global Search Drawer (< md) -->
+    <div class="collapse d-md-none border-top px-3 py-2.5 bg-light-subtle" id="mobileSearchDrawer">
+        <form method="GET" action="{{ route('products.index') }}" class="m-0">
+            <div class="input-group input-group-sm shadow-xs">
+                <span class="input-group-text bg-white border-end-0 text-muted ps-3">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" name="search" class="form-control bg-white border-start-0" placeholder="Search orders, SKU, customers...">
+                <button class="btn btn-primary px-3 fw-semibold" type="submit">Search</button>
+            </div>
+        </form>
     </div>
 </header>

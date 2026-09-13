@@ -60,9 +60,9 @@
 
     <!-- Filter & Search Toolbar -->
     <x-card class="mb-4">
-        <form method="GET" action="{{ route('expenses.index') }}" class="row g-3 align-items-end">
+        <form method="GET" action="{{ route('expenses.index') }}" class="row g-2 g-md-3 align-items-end">
             <!-- Search Query -->
-            <div class="col-md-4 col-lg-3">
+            <div class="col-12 col-md-4 col-lg-3">
                 <label class="form-label small fw-semibold text-muted mb-1">Search</label>
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
@@ -71,7 +71,7 @@
             </div>
 
             <!-- Category Filter -->
-            <div class="col-md-3 col-lg-3">
+            <div class="col-12 col-md-3 col-lg-3">
                 <label class="form-label small fw-semibold text-muted mb-1">Category</label>
                 <select name="category_id" class="form-select">
                     <option value="">All Categories ({{ $categories->count() }})</option>
@@ -84,19 +84,19 @@
             </div>
 
             <!-- Start Date -->
-            <div class="col-md-2 col-lg-2">
+            <div class="col-6 col-md-2 col-lg-2">
                 <label class="form-label small fw-semibold text-muted mb-1">From Date</label>
                 <input type="date" name="start_date" class="form-control" value="{{ $filters['start_date'] ?? '' }}">
             </div>
 
             <!-- End Date -->
-            <div class="col-md-2 col-lg-2">
+            <div class="col-6 col-md-2 col-lg-2">
                 <label class="form-label small fw-semibold text-muted mb-1">To Date</label>
                 <input type="date" name="end_date" class="form-control" value="{{ $filters['end_date'] ?? '' }}">
             </div>
 
             <!-- Filter & Reset Buttons -->
-            <div class="col-md-1 col-lg-2 d-flex gap-2">
+            <div class="col-12 col-md-1 col-lg-2 d-flex gap-2">
                 <button type="submit" class="btn btn-primary flex-grow-1">
                     <i class="bi bi-funnel me-1"></i> Filter
                 </button>

@@ -13,7 +13,7 @@
 
     <!-- Summary KPI Cards -->
     <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Procurement"
                 value="${{ number_format($summary['total_purchases'], 2) }}"
@@ -22,7 +22,7 @@
                 subtext="Total stock purchase value"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Purchase Orders"
                 value="{{ number_format($summary['total_orders']) }}"
@@ -31,7 +31,7 @@
                 subtext="Vendor transactions"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Paid"
                 value="${{ number_format($summary['total_paid'], 2) }}"
@@ -40,7 +40,7 @@
                 subtext="Disbursed to suppliers"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Outstanding Payables"
                 value="${{ number_format($summary['total_due'], 2) }}"

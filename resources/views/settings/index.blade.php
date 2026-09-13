@@ -18,10 +18,10 @@
     </div>
 
     <!-- Live Store Brand Preview Banner -->
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
-        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-            <div class="d-flex align-items-center gap-3.5">
-                <div class="p-2 rounded-3 bg-light border d-flex align-items-center justify-content-center" style="width: 72px; height: 72px;">
+    <div class="card border-0 shadow-sm rounded-4 p-3 p-sm-4 mb-4 bg-white">
+        <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+            <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-3">
+                <div class="p-2 rounded-3 bg-light border d-flex align-items-center justify-content-center flex-shrink-0" style="width: 72px; height: 72px;">
                     <img id="storeLogoPreview"
                          src="{{ asset($settings['store_logo'] ?? 'images/store-logo.svg') }}"
                          alt="Store Logo"
@@ -42,7 +42,7 @@
                     </p>
                 </div>
             </div>
-            <div class="d-flex gap-2">
+            <div class="d-flex flex-wrap gap-2">
                 <span class="badge bg-light text-dark border p-2 text-center rounded-3">
                     <span class="text-muted d-block small" style="font-size: 0.7rem;">DEFAULT RECEIPT</span>
                     <strong class="text-uppercase text-primary">{{ $settings['receipt_size'] ?? '80mm' }}</strong>

@@ -202,7 +202,7 @@ class ExpenseController extends Controller
             module: 'expenses'
         );
 
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() || $request->ajax() || $request->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => "Expense '{$title}' deleted successfully.",
@@ -211,5 +211,27 @@ class ExpenseController extends Controller
 
         return redirect()->route('expenses.index')
             ->with('success', "Expense '{$title}' deleted successfully.");
+    }
+
+    /**
+     * Handle generic DELETE /expenses collection endpoint.
+     */
+    public function destroyAny(Request $request): RedirectResponse|JsonResponse
+    {
+        $id = $request->input('id') ?? $request->input('expense_id') ?? $request->query('id');
+
+        if ($id) {
+            $expense = Expense::find($id);
+            if ($expense) {
+                return $this->destroy($request, $expense);
+            }
+        }
+
+        $msg = 'No expense specified or expense not found.';
+        if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+            return response()->json(['success' => false, 'message' => $msg], 404);
+        }
+
+        return back()->with('error', $msg);
     }
 }

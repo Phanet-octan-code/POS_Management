@@ -78,14 +78,14 @@
 
     <!-- Search & Filter Bar -->
     <x-card class="mb-4">
-        <form method="GET" action="{{ route('users.index') }}" class="row g-3 align-items-center">
-            <div class="col-md-5">
+        <form method="GET" action="{{ route('users.index') }}" class="row g-2 g-md-3 align-items-center">
+            <div class="col-12 col-md-5">
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
                     <input type="text" name="q" value="{{ request('q') }}" class="form-control border-start-0 bg-light" placeholder="Search by name, email, or phone...">
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <select name="role_id" class="form-select bg-light">
                     <option value="">All Roles</option>
                     @foreach ($roles as $r)
@@ -95,14 +95,14 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-2">
+            <div class="col-6 col-md-2">
                 <select name="status" class="form-select bg-light">
                     <option value="">All Statuses</option>
                     <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
                     <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Deactivated</option>
                 </select>
             </div>
-            <div class="col-md-2 d-flex gap-2">
+            <div class="col-12 col-md-2 d-flex gap-2">
                 <button type="submit" class="btn btn-primary w-100 fw-semibold">
                     <i class="bi bi-funnel me-1"></i> Filter
                 </button>
@@ -118,7 +118,7 @@
     <!-- Users Data Table -->
     <x-card>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle text-nowrap mb-0">
                 <thead class="table-light">
                     <tr>
                         <th style="width: 50px;">#</th>
@@ -196,9 +196,9 @@
                                                 'is_active' => $u->is_active,
                                                 'roles' => $u->roles->pluck('name')->all(),
                                                 'created_at' => $u->created_at ? $u->created_at->format('M d, Y h:i A') : '—',
-                                                'sales_count' => $u->sales()->count(),
-                                                'purchases_count' => $u->purchases()->count(),
-                                                'expenses_count' => $u->expenses()->count(),
+                                                'sales_count' => $u->sales_count ?? 0,
+                                                'purchases_count' => $u->purchases_count ?? 0,
+                                                'expenses_count' => $u->expenses_count ?? 0,
                                             ]) }}">
                                         <i class="bi bi-eye"></i>
                                     </button>
@@ -265,9 +265,8 @@
         </div>
 
         @if ($users->hasPages())
-            <div class="p-3 border-top d-flex justify-content-between align-items-center">
-                <small class="text-muted">Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} users</small>
-                <div>{{ $users->links() }}</div>
+            <div class="p-3 border-top">
+                {{ $users->links() }}
             </div>
         @endif
     </x-card>

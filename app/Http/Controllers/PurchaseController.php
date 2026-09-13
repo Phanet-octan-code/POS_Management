@@ -182,7 +182,7 @@ class PurchaseController extends Controller
             module: 'purchases'
         );
 
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => "Purchase order '{$ref}' deleted and stock reverted.",
@@ -193,6 +193,28 @@ class PurchaseController extends Controller
             'success',
             "Purchase order '{$ref}' deleted successfully and stock reverted."
         );
+    }
+
+    /**
+     * Handle generic DELETE /purchases collection endpoint.
+     */
+    public function destroyAny(Request $request): RedirectResponse|JsonResponse
+    {
+        $id = $request->input('id') ?? $request->input('purchase_id') ?? $request->query('id');
+
+        if ($id) {
+            $purchase = Purchase::find($id);
+            if ($purchase) {
+                return $this->destroy($purchase);
+            }
+        }
+
+        $msg = 'No purchase order specified or purchase order not found.';
+        if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+            return response()->json(['success' => false, 'message' => $msg], 404);
+        }
+
+        return back()->with('error', $msg);
     }
 
     /**

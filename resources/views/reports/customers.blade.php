@@ -13,7 +13,7 @@
 
     <!-- Summary KPI Cards -->
     <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Registered Customers"
                 value="{{ number_format($summary['total_customers']) }}"
@@ -22,7 +22,7 @@
                 subtext="Total customer base"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Orders in Period"
                 value="{{ number_format($summary['total_orders']) }}"
@@ -31,7 +31,7 @@
                 subtext="Completed by customers"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Customer Revenue"
                 value="${{ number_format($summary['total_revenue'], 2) }}"
@@ -40,7 +40,7 @@
                 subtext="Sales revenue generated"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Receivables Due"
                 value="${{ number_format($summary['total_receivables'], 2) }}"

@@ -104,14 +104,22 @@ class RoleController extends Controller
     /**
      * Delete custom role (protect core roles).
      */
-    public function destroy(Role $role): RedirectResponse
+    public function destroy(Role $role): RedirectResponse|JsonResponse
     {
         if (in_array($role->slug, ['super-admin', 'admin', 'manager', 'cashier', 'staff'])) {
-            return back()->withErrors(['error' => "Core system role '{$role->name}' cannot be deleted."]);
+            $msg = "Core system role '{$role->name}' cannot be deleted.";
+            if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $msg], 422);
+            }
+            return back()->withErrors(['error' => $msg]);
         }
 
         if ($role->users()->count() > 0) {
-            return back()->withErrors(['error' => "Cannot delete role '{$role->name}' because it is currently assigned to {$role->users()->count()} user(s)."]);
+            $msg = "Cannot delete role '{$role->name}' because it is currently assigned to {$role->users()->count()} user(s).";
+            if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $msg], 422);
+            }
+            return back()->withErrors(['error' => $msg]);
         }
 
         $roleName = $role->name;
@@ -119,6 +127,35 @@ class RoleController extends Controller
 
         ActivityLoggerService::log('role.deleted', "Deleted role {$roleName}");
 
+        if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Role '{$roleName}' deleted successfully.",
+            ]);
+        }
+
         return back()->with('success', "Role '{$roleName}' deleted successfully.");
+    }
+
+    /**
+     * Handle generic DELETE /roles collection endpoint.
+     */
+    public function destroyAny(Request $request): RedirectResponse|JsonResponse
+    {
+        $id = $request->input('id') ?? $request->input('role_id') ?? $request->query('id');
+
+        if ($id) {
+            $role = Role::find($id);
+            if ($role) {
+                return $this->destroy($role);
+            }
+        }
+
+        $msg = 'No role specified or role not found.';
+        if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+            return response()->json(['success' => false, 'message' => $msg], 404);
+        }
+
+        return back()->with('error', $msg);
     }
 }

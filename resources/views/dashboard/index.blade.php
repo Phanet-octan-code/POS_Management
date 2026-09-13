@@ -5,19 +5,19 @@
 @section('content')
 <div class="container-fluid p-0">
     <!-- Welcome Header & Quick Action Row -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3 bg-white p-4 rounded-4 shadow-sm border border-light-subtle">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3 bg-white p-3 p-md-4 rounded-4 shadow-sm border border-light-subtle">
         <div class="d-flex align-items-center gap-3">
-            <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 52px; height: 52px;">
-                <i class="bi bi-speedometer2 fs-3"></i>
+            <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                <i class="bi bi-speedometer2 fs-4"></i>
             </div>
             <div>
-                <h4 class="fw-bold text-dark mb-1">Store Performance Dashboard</h4>
+                <h4 class="fw-bold text-dark mb-1 fs-5 fs-md-4">Store Performance Dashboard</h4>
                 <p class="text-muted small mb-0">Real-time business intelligence, live MySQL sales data, inventory alerts, and profitability.</p>
             </div>
         </div>
-        <div class="d-flex flex-wrap gap-2">
+        <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
             @if (auth()->user()?->hasRole(['admin', 'cashier']))
-                <a href="{{ route('pos.index') }}" class="btn btn-success fw-bold px-3.5 py-2 rounded-3 shadow-sm d-flex align-items-center gap-2 text-decoration-none">
+                <a href="{{ route('pos.index') }}" class="btn btn-success fw-bold px-3 py-2 rounded-3 shadow-sm d-flex align-items-center gap-2 text-decoration-none">
                     <i class="bi bi-cart-plus-fill fs-5"></i>
                     <span>Open POS Terminal</span>
                 </a>
@@ -44,7 +44,7 @@
     </h6>
     <div class="row g-3 mb-4">
         <!-- 1. Total Sales -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Sales"
                 value="${{ number_format($summary['total_sales'], 2) }}"
@@ -55,7 +55,7 @@
             />
         </div>
         <!-- 2. Today's Sales -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Today's Sales"
                 value="${{ number_format($summary['today_sales'], 2) }}"
@@ -66,7 +66,7 @@
             />
         </div>
         <!-- 3. Monthly Sales -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Monthly Sales"
                 value="${{ number_format($summary['monthly_sales'], 2) }}"
@@ -77,7 +77,7 @@
             />
         </div>
         <!-- 4. Total Orders -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Orders"
                 value="{{ number_format($summary['total_orders']) }}"
@@ -94,7 +94,7 @@
     </h6>
     <div class="row g-3 mb-4">
         <!-- 5. Gross Profit -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Gross Profit"
                 value="${{ number_format($summary['gross_profit'], 2) }}"
@@ -104,7 +104,7 @@
             />
         </div>
         <!-- 6. Total Expenses -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Expenses"
                 value="${{ number_format($summary['total_expenses'], 2) }}"
@@ -114,7 +114,7 @@
             />
         </div>
         <!-- 7. Net Profit -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Net Profit"
                 value="${{ number_format($summary['net_profit'], 2) }}"
@@ -125,7 +125,7 @@
             />
         </div>
         <!-- 8. Total Products -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Products"
                 value="{{ number_format($summary['total_products']) }}"
@@ -142,7 +142,7 @@
     </h6>
     <div class="row g-3 mb-4">
         <!-- 9. Low Stock -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Low Stock"
                 value="{{ number_format($summary['low_stock']) }}"
@@ -153,7 +153,7 @@
             />
         </div>
         <!-- 10. Out of Stock -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Out of Stock"
                 value="{{ number_format($summary['out_of_stock']) }}"
@@ -164,7 +164,7 @@
             />
         </div>
         <!-- 11. Total Customers -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Customers"
                 value="{{ number_format($summary['total_customers']) }}"
@@ -174,43 +174,45 @@
             />
         </div>
         <!-- 12. Total Suppliers -->
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Suppliers"
                 value="{{ number_format($summary['total_suppliers']) }}"
                 icon="bi-truck"
                 color="secondary"
-                subtext="Procurement vendor partners"
+                subtext="Wholesale vendor partners"
             />
         </div>
     </div>
 
-    <!-- ==================== CHARTS SECTION WITH FILTERS ==================== -->
-    <div class="card shadow-sm border-0 mb-4 rounded-4">
-        <div class="card-header bg-white border-0 pt-4 px-4 pb-2">
+    <!-- ==================== INTERACTIVE CHARTS ==================== -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-header bg-white border-0 pt-3 pt-md-4 px-3 px-md-4 pb-2">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
                 <div>
                     <h5 class="fw-bold text-dark mb-1">Sales Trends & Visual Analytics</h5>
                     <p class="text-muted small mb-0">Dynamic performance graphs computed from transaction ledger records.</p>
                 </div>
                 <!-- Interactive Time Filter Buttons -->
-                <div class="btn-group p-1 bg-light rounded-pill border" role="group" id="chartFilterGroup">
-                    <button type="button" class="btn btn-sm rounded-pill px-3 filter-btn {{ $filter === 'today' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}" data-filter="today">
-                        Today
-                    </button>
-                    <button type="button" class="btn btn-sm rounded-pill px-3 filter-btn {{ $filter === '7days' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}" data-filter="7days">
-                        Last 7 Days
-                    </button>
-                    <button type="button" class="btn btn-sm rounded-pill px-3 filter-btn {{ $filter === '30days' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}" data-filter="30days">
-                        Last 30 Days
-                    </button>
-                    <button type="button" class="btn btn-sm rounded-pill px-3 filter-btn {{ $filter === 'this_year' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}" data-filter="this_year">
-                        This Year
-                    </button>
+                <div class="scroll-x-touch pb-1 w-100 w-md-auto">
+                    <div class="btn-group p-1 bg-light rounded-pill border text-nowrap" role="group" id="chartFilterGroup">
+                        <button type="button" class="btn btn-sm rounded-pill px-3 filter-btn {{ $filter === 'today' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}" data-filter="today">
+                            Today
+                        </button>
+                        <button type="button" class="btn btn-sm rounded-pill px-3 filter-btn {{ $filter === '7days' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}" data-filter="7days">
+                            Last 7 Days
+                        </button>
+                        <button type="button" class="btn btn-sm rounded-pill px-3 filter-btn {{ $filter === '30days' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}" data-filter="30days">
+                            Last 30 Days
+                        </button>
+                        <button type="button" class="btn btn-sm rounded-pill px-3 filter-btn {{ $filter === 'this_year' ? 'btn-primary active text-white fw-bold shadow-sm' : 'btn-light text-dark' }}" data-filter="this_year">
+                            This Year
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card-body p-4">
+        <div class="card-body p-3 p-md-4">
             <div class="row g-4">
                 <!-- 1. Sales by Day / Filter Trend Chart -->
                 <div class="col-lg-8">
@@ -273,14 +275,14 @@
         <!-- Table 1: Recent Sales -->
         <div class="col-12">
             <x-card>
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                     <div>
                         <h5 class="fw-bold text-dark mb-1">
                             <i class="bi bi-receipt text-primary me-2"></i> Recent Sales
                         </h5>
                         <p class="text-muted small mb-0">Latest transactions finalized at the POS checkout.</p>
                     </div>
-                    <a href="{{ route('sales.index') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                    <a href="{{ route('sales.index') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 text-nowrap">
                         View All Sales <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
@@ -348,14 +350,14 @@
         <!-- Table 2: Top Selling Products -->
         <div class="col-lg-6">
             <x-card>
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                     <div>
                         <h5 class="fw-bold text-dark mb-1">
                             <i class="bi bi-trophy text-warning me-2"></i> Top Selling Products
                         </h5>
                         <p class="text-muted small mb-0">Highest volume items by total units sold.</p>
                     </div>
-                    <a href="{{ route('products.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                    <a href="{{ route('products.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 text-nowrap">
                         View Products <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
@@ -404,14 +406,14 @@
         <!-- Table 3: Low Stock Warnings -->
         <div class="col-lg-6">
             <x-card>
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                     <div>
                         <h5 class="fw-bold text-dark mb-1">
                             <i class="bi bi-exclamation-octagon text-danger me-2"></i> Low Stock Warnings
                         </h5>
                         <p class="text-muted small mb-0">Items requiring procurement replenishment.</p>
                     </div>
-                    <a href="{{ route('inventory.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                    <a href="{{ route('inventory.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 text-nowrap">
                         Manage Inventory <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>

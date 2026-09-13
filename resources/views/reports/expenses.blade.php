@@ -13,7 +13,7 @@
 
     <!-- Summary KPI Cards -->
     <div class="row g-3 mb-4">
-        <div class="col-xl-4 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-4">
             <x-stat-box
                 title="Total Operating Expenses"
                 value="${{ number_format($summary['total_expenses'], 2) }}"
@@ -22,7 +22,7 @@
                 subtext="Cumulative overhead costs"
             />
         </div>
-        <div class="col-xl-4 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-4">
             <x-stat-box
                 title="Expense Vouchers"
                 value="{{ number_format($summary['total_count']) }}"
@@ -31,7 +31,7 @@
                 subtext="Logged expense entries"
             />
         </div>
-        <div class="col-xl-4 col-md-12">
+        <div class="col-12 col-sm-12 col-xl-4">
             <x-stat-box
                 title="Average Expense"
                 value="${{ number_format($summary['avg_expense'], 2) }}"

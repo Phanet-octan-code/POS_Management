@@ -12,7 +12,7 @@
             </h3>
             <p class="text-muted mb-0">Track real-time stock levels, inventory valuations, low stock alerts, and audit movements.</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
             <a href="{{ route('inventory.history') }}" class="btn btn-outline-secondary rounded-pill px-3 shadow-sm">
                 <i class="bi bi-clock-history me-1"></i> Stock Movement History
             </a>
@@ -59,11 +59,9 @@
                         <i class="bi bi-exclamation-triangle"></i>
                     </div>
                     <div>
-                        <small class="text-muted text-uppercase fw-semibold" style="font-size: 0.72rem;">Low Stock Items</small>
+                        <small class="text-muted text-uppercase fw-semibold" style="font-size: 0.72rem;">Low Stock Warning</small>
                         <h4 class="fw-bold text-warning mb-0">{{ $lowStockCount }}</h4>
-                        <a href="{{ route('inventory.index', ['stock_status' => 'low_stock']) }}" class="small text-decoration-none fw-semibold">
-                            View low stock &rarr;
-                        </a>
+                        <small class="text-muted">Requires replenishment</small>
                     </div>
                 </div>
             </div>
@@ -72,7 +70,7 @@
             <div class="card border-0 rounded-4 shadow-sm p-3 bg-white h-100 {{ $outOfStockCount > 0 ? 'border-start border-danger border-4' : '' }}">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-3 bg-danger-subtle text-danger p-3 fs-4">
-                        <i class="bi bi-x-circle"></i>
+                        <i class="bi bi-x-octagon"></i>
                     </div>
                     <div>
                         <small class="text-muted text-uppercase fw-semibold" style="font-size: 0.72rem;">Out of Stock</small>
@@ -89,13 +87,13 @@
     <!-- Filters & Search Toolbar -->
     <x-card class="mb-4">
         <form method="GET" action="{{ route('inventory.index') }}" class="row g-2 align-items-center">
-            <div class="col-md-5 col-lg-5">
+            <div class="col-12 col-md-5 col-lg-5">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
                     <input type="text" name="search" class="form-control border-start-0" placeholder="Search product name, SKU, or barcode..." value="{{ request('search') }}">
                 </div>
             </div>
-            <div class="col-md-3 col-lg-3">
+            <div class="col-6 col-md-3 col-lg-3">
                 <select name="category_id" class="form-select">
                     <option value="">All Categories</option>
                     @foreach ($categories as $cat)
@@ -105,7 +103,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-2 col-lg-2">
+            <div class="col-6 col-md-2 col-lg-2">
                 <select name="stock_status" class="form-select">
                     <option value="">All Stock Statuses</option>
                     <option value="in_stock" {{ request('stock_status') === 'in_stock' ? 'selected' : '' }}>In Stock</option>
@@ -113,7 +111,7 @@
                     <option value="out_of_stock" {{ request('stock_status') === 'out_of_stock' ? 'selected' : '' }}>Out of Stock</option>
                 </select>
             </div>
-            <div class="col-md-2 col-lg-2 d-flex gap-2">
+            <div class="col-12 col-md-2 col-lg-2 d-flex gap-2">
                 <button type="submit" class="btn btn-dark w-100"><i class="bi bi-funnel me-1"></i> Filter</button>
                 @if(request()->hasAny(['search', 'category_id', 'stock_status']))
                     <a href="{{ route('inventory.index') }}" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>

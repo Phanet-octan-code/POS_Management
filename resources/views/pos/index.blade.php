@@ -2,18 +2,41 @@
 
 @section('title', 'POS Sales Terminal')
 
+@push('styles')
+<style>
+    @media (max-width: 991.98px) {
+        .pos-mobile-pane.d-mobile-none {
+            display: none !important;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
+<!-- Mobile Tab Switcher (< lg) -->
+<div class="d-lg-none bg-white border-bottom px-3 py-2 sticky-top shadow-xs" style="z-index: 1010; top: 0;">
+    <div class="nav nav-pills nav-fill bg-light p-1 rounded-pill" role="tablist">
+        <button class="nav-link active rounded-pill py-1.5 fw-semibold small" id="tabCatalogBtn" type="button" onclick="switchPosMobileTab('catalog')">
+            <i class="bi bi-grid me-1"></i> Catalog
+        </button>
+        <button class="nav-link rounded-pill py-1.5 fw-semibold small position-relative" id="tabCartBtn" type="button" onclick="switchPosMobileTab('cart')">
+            <i class="bi bi-cart3 me-1"></i> Cart &amp; Checkout
+            <span class="badge bg-primary rounded-pill ms-1" id="mobileCartItemBadge">0</span>
+        </button>
+    </div>
+</div>
+
 <div class="row g-0 h-100">
     <!-- ======================================================== -->
     <!-- LEFT COLUMN: Barcode, Filters, Search & Product Grid     -->
     <!-- ======================================================== -->
-    <div class="col-lg-7 col-xl-8 d-flex flex-column h-100 border-end bg-light">
+    <div id="posCatalogCol" class="col-lg-7 col-xl-8 d-flex flex-column h-100 border-end bg-light pos-mobile-pane">
         <!-- Top Controls: Barcode Scanner & Search Toolbar -->
-        <div class="p-3 bg-white border-bottom shadow-xs">
+        <div class="p-2.5 p-sm-3 bg-white border-bottom shadow-xs">
             <div class="row g-2 align-items-center">
                 @if ($posSettings['enable_barcode'])
                     <!-- Barcode Scanner Input (Auto-Add On Enter/Scan) -->
-                    <div class="col-md-5">
+                    <div class="col-12 col-sm-6 col-md-5">
                         <div class="input-group">
                             <span class="input-group-text bg-primary text-white border-primary">
                                 <i class="bi bi-upc-scan"></i>
@@ -21,7 +44,7 @@
                             <input type="text"
                                    id="barcodeScannerInput"
                                    class="form-control border-primary bg-light fw-bold font-monospace"
-                                   placeholder="Scan / Enter Barcode (Auto-Add)..."
+                                   placeholder="Scan / Enter Barcode..."
                                    autocomplete="off"
                                    autofocus>
                             <button class="btn btn-outline-primary" type="button" onclick="triggerBarcodeScan()" title="Search & Add Barcode">
@@ -31,7 +54,7 @@
                     </div>
 
                     <!-- Product Name / SKU Search -->
-                    <div class="col-md-3">
+                    <div class="col-12 col-sm-6 col-md-3">
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
                             <input type="text"
@@ -42,7 +65,7 @@
                     </div>
                 @else
                     <!-- Product Name / SKU Search (Full Width when barcode scanner disabled) -->
-                    <div class="col-md-8">
+                    <div class="col-12 col-md-8">
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
                             <input type="text"
@@ -55,7 +78,7 @@
                 @endif
 
                 <!-- Category Filter -->
-                <div class="col-md-2">
+                <div class="col-6 col-md-2">
                     <select id="posCategorySelect" class="form-select bg-light" onchange="filterProducts()">
                         <option value="">All Categories</option>
                         @foreach ($categories as $cat)
@@ -65,7 +88,7 @@
                 </div>
 
                 <!-- Brand Filter -->
-                <div class="col-md-2">
+                <div class="col-6 col-md-2">
                     <select id="posBrandSelect" class="form-select bg-light" onchange="filterProducts()">
                         <option value="">All Brands</option>
                         @foreach ($brands as $brand)
@@ -145,7 +168,14 @@
     <!-- ======================================================== -->
     <!-- RIGHT COLUMN: Customer, Reactive Cart, Totals & Checkout -->
     <!-- ======================================================== -->
-    <div class="col-lg-5 col-xl-4 cart-container h-100 d-flex flex-column bg-white shadow">
+    <div id="posCartCol" class="col-lg-5 col-xl-4 cart-container h-100 d-flex flex-column bg-white shadow pos-mobile-pane d-mobile-none">
+        <!-- Mobile Return to Catalog Button (< lg) -->
+        <div class="d-lg-none p-2.5 bg-light border-bottom">
+            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill w-100 fw-semibold" onclick="switchPosMobileTab('catalog')">
+                <i class="bi bi-arrow-left me-1"></i> Back to Product Catalog
+            </button>
+        </div>
+
         @if ($posSettings['enable_customer'])
             <!-- Customer Selection Bar -->
             <div class="p-3 border-bottom bg-white">
@@ -258,6 +288,24 @@
                 </button>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Mobile Floating Bottom Checkout Bar (< lg) -->
+<div id="mobileFloatingCartBar" class="d-lg-none position-fixed bottom-0 start-0 end-0 p-2.5 bg-white border-top shadow-lg d-none" style="z-index: 1025;">
+    <div class="d-flex align-items-center justify-content-between gap-2">
+        <div class="d-flex align-items-center gap-2">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
+                <i class="bi bi-cart3 fs-5"></i>
+            </div>
+            <div>
+                <span class="small text-muted d-block lh-1"><span id="mobileFloatingQty">0</span> items in cart</span>
+                <span class="fw-bold text-dark fs-6" id="mobileFloatingTotal">{{ $posSettings['currency_symbol'] }}0.00</span>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary rounded-pill px-3.5 py-2 fw-bold shadow-sm" onclick="switchPosMobileTab('cart')">
+            View Cart &amp; Pay <i class="bi bi-arrow-right ms-1"></i>
+        </button>
     </div>
 </div>
 
@@ -860,6 +908,54 @@
             document.getElementById('summaryItemDiscounts').innerText = `-${currency}${itemDiscounts.toFixed(2)}`;
         } else {
             itemDiscRow.classList.add('d-none');
+        }
+
+        // Synchronize Mobile Cart Elements
+        const totalItemsCount = cart.reduce((sum, i) => sum + i.quantity, 0);
+        const mobileBadge = document.getElementById('mobileCartItemBadge');
+        const mobileFloatingQty = document.getElementById('mobileFloatingQty');
+        const mobileFloatingTotal = document.getElementById('mobileFloatingTotal');
+        const mobileFloatingCartBar = document.getElementById('mobileFloatingCartBar');
+        const catalogCol = document.getElementById('posCatalogCol');
+
+        if (mobileBadge) mobileBadge.innerText = totalItemsCount;
+        if (mobileFloatingQty) mobileFloatingQty.innerText = totalItemsCount;
+        if (mobileFloatingTotal) mobileFloatingTotal.innerText = `${currency}${grandTotal.toFixed(2)}`;
+
+        if (mobileFloatingCartBar) {
+            if (totalItemsCount > 0 && catalogCol && !catalogCol.classList.contains('d-mobile-none')) {
+                mobileFloatingCartBar.classList.remove('d-none');
+            } else {
+                mobileFloatingCartBar.classList.add('d-none');
+            }
+        }
+    }
+
+    // Mobile Segmented Tab Switching (< lg)
+    function switchPosMobileTab(tab) {
+        const catalogCol = document.getElementById('posCatalogCol');
+        const cartCol = document.getElementById('posCartCol');
+        const tabCatalogBtn = document.getElementById('tabCatalogBtn');
+        const tabCartBtn = document.getElementById('tabCartBtn');
+        const floatingBar = document.getElementById('mobileFloatingCartBar');
+
+        if (tab === 'cart') {
+            if (catalogCol) catalogCol.classList.add('d-mobile-none');
+            if (cartCol) cartCol.classList.remove('d-mobile-none');
+            if (tabCatalogBtn) tabCatalogBtn.classList.remove('active');
+            if (tabCartBtn) tabCartBtn.classList.add('active');
+            if (floatingBar) floatingBar.classList.add('d-none');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            if (catalogCol) catalogCol.classList.remove('d-mobile-none');
+            if (cartCol) cartCol.classList.add('d-mobile-none');
+            if (tabCatalogBtn) tabCatalogBtn.classList.add('active');
+            if (tabCartBtn) tabCartBtn.classList.remove('active');
+            const totalItemsCount = cart.reduce((sum, i) => sum + i.quantity, 0);
+            if (floatingBar && totalItemsCount > 0) {
+                floatingBar.classList.remove('d-none');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
 

@@ -5,12 +5,12 @@
 @section('content')
 <div class="container-fluid p-0">
     <!-- Page Header -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <div>
             <h3 class="fw-bold text-dark mb-1">Audit Activity Logs</h3>
             <p class="text-muted mb-0">Comprehensive audit trail recording all user actions, operational modules, timestamps, and network IPs.</p>
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex flex-wrap align-items-center gap-2">
             <span class="badge bg-light text-dark border px-3 py-2 rounded-pill font-monospace">
                 <i class="bi bi-clock-history me-1 text-primary"></i> Total: {{ number_format($totalLogsCount) }} logs
             </span>
@@ -115,7 +115,7 @@
     <!-- Activity Log Results Table Card -->
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-4">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle text-nowrap mb-0">
                 <thead class="table-light">
                     <tr>
                         <th style="width: 14%;">Date & Time</th>
@@ -209,10 +209,7 @@
         </div>
 
         @if ($logs->hasPages())
-            <div class="card-footer bg-light border-top p-3 d-flex justify-content-between align-items-center">
-                <small class="text-muted">
-                    Showing {{ $logs->firstItem() ?? 0 }} to {{ $logs->lastItem() ?? 0 }} of {{ $logs->total() }} activity logs
-                </small>
+            <div class="card-footer bg-white border-top p-3">
                 {{ $logs->links() }}
             </div>
         @endif

@@ -12,12 +12,12 @@
     <!-- Profile Info Card -->
     <x-card class="mb-4" title="Profile Details" subtitle="Update your personal details">
         <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
-            <div class="rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center fs-3" style="width: 64px; height: 64px;">
+            <div class="rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 64px; height: 64px;">
                 {{ strtoupper(substr($user->name, 0, 1)) }}
             </div>
             <div>
                 <h5 class="fw-bold text-dark mb-1">{{ $user->name }}</h5>
-                <div class="d-flex gap-2 align-items-center">
+                <div class="d-flex flex-wrap gap-2 align-items-center">
                     <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold">
                         <i class="bi bi-shield-check me-1"></i> {{ $user->primaryRoleName() }}
                     </span>

@@ -10,7 +10,7 @@
             <h3 class="fw-bold text-dark mb-1"><i class="bi bi-box-seam me-2 text-primary"></i> Product Management</h3>
             <p class="text-muted mb-0">Manage catalog items, pricing, inventory stock, barcodes, and suppliers.</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
             <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary rounded-pill px-3">
                 <i class="bi bi-tags me-1"></i> Categories
             </a>
@@ -26,9 +26,9 @@
     <!-- KPI Summary Cards -->
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
-            <div class="card border-0 rounded-4 shadow-sm p-3 bg-white">
+            <div class="card border-0 rounded-4 shadow-sm p-3 bg-white h-100">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-3 bg-primary-subtle text-primary p-3 fs-4">
+                    <div class="rounded-3 bg-primary-subtle text-primary p-2.5 p-sm-3 fs-4">
                         <i class="bi bi-boxes"></i>
                     </div>
                     <div>
@@ -39,9 +39,9 @@
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card border-0 rounded-4 shadow-sm p-3 bg-white">
+            <div class="card border-0 rounded-4 shadow-sm p-3 bg-white h-100">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-3 bg-success-subtle text-success p-3 fs-4">
+                    <div class="rounded-3 bg-success-subtle text-success p-2.5 p-sm-3 fs-4">
                         <i class="bi bi-check-circle"></i>
                     </div>
                     <div>
@@ -52,9 +52,9 @@
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card border-0 rounded-4 shadow-sm p-3 bg-white">
+            <div class="card border-0 rounded-4 shadow-sm p-3 bg-white h-100">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-3 bg-warning-subtle text-warning p-3 fs-4">
+                    <div class="rounded-3 bg-warning-subtle text-warning p-2.5 p-sm-3 fs-4">
                         <i class="bi bi-exclamation-triangle"></i>
                     </div>
                     <div>
@@ -65,9 +65,9 @@
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card border-0 rounded-4 shadow-sm p-3 bg-white">
+            <div class="card border-0 rounded-4 shadow-sm p-3 bg-white h-100">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-3 bg-danger-subtle text-danger p-3 fs-4">
+                    <div class="rounded-3 bg-danger-subtle text-danger p-2.5 p-sm-3 fs-4">
                         <i class="bi bi-x-octagon"></i>
                     </div>
                     <div>
@@ -82,13 +82,13 @@
     <!-- Filter & Search Toolbar -->
     <x-card class="mb-4">
         <form method="GET" action="{{ route('products.index') }}" class="row g-2 align-items-center">
-            <div class="col-md-4 col-lg-3">
+            <div class="col-12 col-md-4 col-lg-3">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0" placeholder="Search by name, SKU, barcode..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control border-start-0" placeholder="Search name, SKU, barcode..." value="{{ request('search') }}">
                 </div>
             </div>
-            <div class="col-md-3 col-lg-2">
+            <div class="col-6 col-md-3 col-lg-2">
                 <select name="category_id" class="form-select">
                     <option value="">All Categories</option>
                     @foreach ($categories as $cat)
@@ -96,7 +96,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-3 col-lg-2">
+            <div class="col-6 col-md-3 col-lg-2">
                 <select name="brand_id" class="form-select">
                     <option value="">All Brands</option>
                     @foreach ($brands as $b)
@@ -104,7 +104,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-3 col-lg-2">
+            <div class="col-6 col-md-3 col-lg-2">
                 <select name="stock_status" class="form-select">
                     <option value="">All Stock Levels</option>
                     <option value="in" {{ request('stock_status') === 'in' ? 'selected' : '' }}>In Stock (>0)</option>
@@ -112,14 +112,14 @@
                     <option value="out" {{ request('stock_status') === 'out' ? 'selected' : '' }}>Out of Stock (0)</option>
                 </select>
             </div>
-            <div class="col-md-3 col-lg-1">
+            <div class="col-6 col-md-3 col-lg-1">
                 <select name="status" class="form-select">
                     <option value="">Status</option>
                     <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Active</option>
                     <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inactive</option>
                 </select>
             </div>
-            <div class="col-md-6 col-lg-2 d-flex gap-2">
+            <div class="col-12 col-md-6 col-lg-2 d-flex gap-2">
                 <button type="submit" class="btn btn-dark w-100"><i class="bi bi-funnel me-1"></i> Filter</button>
                 @if(request()->hasAny(['search', 'category_id', 'brand_id', 'stock_status', 'status']))
                     <a href="{{ route('products.index') }}" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
@@ -229,6 +229,10 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
+                                <form id="delete-product-form-{{ $prod->id }}" action="{{ route('products.destroy', $prod) }}" method="POST" class="d-none">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
                             </td>
                         </tr>
                     @empty
@@ -405,15 +409,25 @@
                         method: 'DELETE',
                         body: JSON.stringify({ id: id })
                     });
-                    if (res.success) {
+                    if (res && res.success) {
                         const row = document.getElementById(`product-row-${id}`);
                         if (row) row.remove();
-                        Toast.fire({ icon: 'success', title: res.message });
+                        Toast.fire({ icon: 'success', title: res.message || 'Product deleted successfully.' });
                     } else {
-                        Swal.fire('Error', res.message || 'Failed to delete product.', 'error');
+                        const deleteForm = document.getElementById(`delete-product-form-${id}`);
+                        if (deleteForm) {
+                            deleteForm.submit();
+                        } else {
+                            Swal.fire('Error', (res && res.message) ? res.message : 'Failed to delete product.', 'error');
+                        }
                     }
                 } catch (err) {
-                    Swal.fire('Error', 'Failed to delete product.', 'error');
+                    const deleteForm = document.getElementById(`delete-product-form-${id}`);
+                    if (deleteForm) {
+                        deleteForm.submit();
+                    } else {
+                        Swal.fire('Error', 'Failed to delete product.', 'error');
+                    }
                 }
             }
         });

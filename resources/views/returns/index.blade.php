@@ -5,7 +5,7 @@
 @section('content')
 <div class="container-fluid p-0">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <div>
             <h3 class="fw-bold text-dark mb-1">Product Returns & Refunds</h3>
             <p class="text-muted mb-0">Manage customer returns, restock returned inventory, and audit refunds.</p>
@@ -18,35 +18,35 @@
     <!-- Summary KPI Cards -->
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-4">
-            <x-card class="border-0 shadow-sm p-3">
+            <x-card class="border-0 shadow-sm p-3 h-100">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-3 p-3 bg-warning-subtle text-warning">
                         <i class="bi bi-arrow-return-left fs-4"></i>
                     </div>
                     <div>
                         <span class="text-muted small fw-semibold text-uppercase" style="font-size: 0.72rem;">Total Returns</span>
-                        <h4 class="fw-bold text-dark mb-0">{{ number_format($totalReturnsCount) }}</h4>
+                        <h4 class="fw-bold text-dark mb-0">{{ number_format($totalReturnsCount ?? 0) }}</h4>
                     </div>
                 </div>
             </x-card>
         </div>
         <div class="col-6 col-md-4">
-            <x-card class="border-0 shadow-sm p-3">
+            <x-card class="border-0 shadow-sm p-3 h-100">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-3 p-3 bg-danger-subtle text-danger">
                         <i class="bi bi-cash-stack fs-4"></i>
                     </div>
                     <div>
                         <span class="text-muted small fw-semibold text-uppercase" style="font-size: 0.72rem;">Total Refunded</span>
-                        <h4 class="fw-bold text-danger mb-0">${{ number_format($totalRefundsSum, 2) }}</h4>
+                        <h4 class="fw-bold text-danger mb-0">${{ number_format($totalRefundAmount ?? $totalRefundsSum ?? 0, 2) }}</h4>
                     </div>
                 </div>
             </x-card>
         </div>
         <div class="col-12 col-md-4">
-            <x-card class="border-0 shadow-sm p-3">
+            <x-card class="border-0 shadow-sm p-3 h-100">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-3 p-3 bg-primary-subtle text-primary">
+                    <div class="rounded-3 p-3 bg-info-subtle text-info">
                         <i class="bi bi-shield-check fs-4"></i>
                     </div>
                     <div>
@@ -62,7 +62,7 @@
     <!-- Filter & Search Toolbar -->
     <x-card class="mb-4 shadow-sm border-0">
         <form method="GET" action="{{ route('returns.index') }}" class="row g-2 align-items-end">
-            <div class="col-md-4">
+            <div class="col-12 col-md-4">
                 <label class="form-label small fw-semibold text-muted mb-1">Search</label>
                 <div class="input-group input-group-sm">
                     <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
@@ -81,7 +81,7 @@
                 <label class="form-label small fw-semibold text-muted mb-1">To Date</label>
                 <input type="date" name="end_date" class="form-control form-control-sm" value="{{ request('end_date') }}">
             </div>
-            <div class="col-md-2 d-flex gap-1">
+            <div class="col-12 col-md-2 d-flex gap-1 mt-2 mt-md-0">
                 <button type="submit" class="btn btn-sm btn-primary w-100 fw-semibold">
                     <i class="bi bi-funnel-fill me-1"></i> Filter
                 </button>
@@ -95,7 +95,7 @@
     <!-- Returns Table -->
     <x-card class="shadow-sm border-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle text-nowrap mb-0">
                 <thead class="table-light">
                     <tr>
                         <th>Return No</th>
@@ -160,9 +160,11 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">
-            {{ $returns->links() }}
-        </div>
+        @if($returns->hasPages())
+            <div class="mt-4 pt-3 border-top">
+                {{ $returns->links() }}
+            </div>
+        @endif
     </x-card>
 </div>
 @endsection

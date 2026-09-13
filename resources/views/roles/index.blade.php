@@ -10,7 +10,7 @@
             <h3 class="fw-bold text-dark mb-1">Roles & Permissions Management</h3>
             <p class="text-muted mb-0">Define role-based access control (RBAC) and assign granular permissions across all 14 POS modules.</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
             <a href="{{ route('users.index') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-people me-1"></i> Staff Directory
             </a>
@@ -21,7 +21,7 @@
     </div>
 
     <!-- Role Cards Grid -->
-    <div class="row g-4 mb-4">
+    <div class="row g-3 g-md-4 mb-4">
         @foreach ($roles as $role)
             @php
                 $isCoreRole = in_array($role->slug, ['admin', 'super-admin', 'manager', 'cashier', 'staff']);
@@ -40,7 +40,7 @@
                     default => 'bi-person-badge',
                 };
             @endphp
-            <div class="col-md-6 col-xl-3">
+            <div class="col-12 col-md-6 col-xl-3">
                 <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column">
                     <!-- Top Ribbon Accent -->
                     <div class="bg-{{ $themeColor }}" style="height: 4px;"></div>

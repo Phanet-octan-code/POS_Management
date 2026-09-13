@@ -13,7 +13,7 @@
 
     <!-- Summary KPI Cards -->
     <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Catalog Products"
                 value="{{ number_format($summary['total_items']) }}"
@@ -22,7 +22,7 @@
                 subtext="Registered product items"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Stock Units"
                 value="{{ number_format($summary['total_units']) }}"
@@ -31,7 +31,7 @@
                 subtext="Units on shelves & warehouse"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Inventory Cost Value"
                 value="${{ number_format($summary['total_cost_value'], 2) }}"
@@ -40,7 +40,7 @@
                 subtext="Total capital tied in stock"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Potential Gross Profit"
                 value="${{ number_format($summary['potential_profit'], 2) }}"

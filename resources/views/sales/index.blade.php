@@ -5,12 +5,12 @@
 @section('content')
 <div class="container-fluid p-0">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <div>
             <h3 class="fw-bold text-dark mb-1">Sales Management</h3>
             <p class="text-muted mb-0">Track and filter POS sales, print invoices, and process product returns.</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
             <a href="{{ route('returns.create') }}" class="btn btn-outline-warning text-dark fw-semibold">
                 <i class="bi bi-arrow-return-left me-1"></i> Process Return
             </a>
@@ -76,11 +76,11 @@
         </div>
     </div>
 
-    <!-- Filter & Search Toolbar -->
+    <!-- Filter Toolbar -->
     <x-card class="mb-4 shadow-sm border-0">
         <form method="GET" action="{{ route('sales.index') }}" class="row g-2 align-items-end">
             <!-- Search Keyword -->
-            <div class="col-md-3">
+            <div class="col-12 col-md-3">
                 <label class="form-label small fw-semibold text-muted mb-1">Search</label>
                 <div class="input-group input-group-sm">
                     <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
@@ -134,13 +134,15 @@
             </div>
 
             <!-- Buttons -->
-            <div class="col-md-2 d-flex gap-1">
+            <div class="col-12 col-md-2 d-flex gap-1 mt-2 mt-md-0">
                 <button type="submit" class="btn btn-sm btn-primary w-100 fw-semibold">
                     <i class="bi bi-funnel-fill me-1"></i> Filter
                 </button>
-                <a href="{{ route('sales.index') }}" class="btn btn-sm btn-outline-secondary w-100" title="Reset Filters">
-                    Reset
-                </a>
+                @if(request()->hasAny(['search', 'payment_status', 'payment_method', 'start_date', 'end_date']))
+                    <a href="{{ route('sales.index') }}" class="btn btn-sm btn-outline-secondary" title="Reset Filters">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                @endif
             </div>
         </form>
     </x-card>
@@ -148,7 +150,7 @@
     <!-- Sales Invoices Table -->
     <x-card class="shadow-sm border-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle text-nowrap mb-0">
                 <thead class="table-light">
                     <tr>
                         <th>Invoice No</th>
@@ -271,9 +273,11 @@
                 </tbody>
             </table>
         </div>
-        <div class="mt-3">
-            {{ $sales->links() }}
-        </div>
+        @if ($sales->hasPages())
+            <div class="mt-4 pt-3 border-top">
+                {{ $sales->links() }}
+            </div>
+        @endif
     </x-card>
 </div>
 @endsection

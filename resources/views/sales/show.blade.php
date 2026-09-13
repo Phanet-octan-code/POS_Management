@@ -4,12 +4,12 @@
 
 @section('content')
 <div class="container-fluid p-0" style="max-width: 900px;">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <div>
             <h3 class="fw-bold text-dark mb-1">Invoice {{ $sale->invoice_no }}</h3>
             <p class="text-muted mb-0">Processed on {{ $sale->sale_date->format('M d, Y H:i:s') }}</p>
         </div>
-        <div class="d-flex gap-2 align-items-center">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
             <div class="btn-group">
                 <a href="{{ route('pos.receipt.show', ['sale' => $sale, 'format' => '80mm']) }}" target="_blank" class="btn btn-primary">
                     <i class="bi bi-printer me-1"></i> Print Receipt
@@ -48,19 +48,19 @@
 
     <x-card class="mb-4">
         <div class="row g-3">
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <small class="text-muted d-block">Customer</small>
                 <strong>{{ $sale->customer?->name ?? 'Walk-in Customer' }}</strong>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <small class="text-muted d-block">Cashier / Staff</small>
                 <strong>{{ $sale->user?->name ?? 'Staff' }}</strong>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <small class="text-muted d-block">Payment Method</small>
                 <span class="badge bg-light text-dark border text-uppercase">{{ $sale->payment_method }}</span>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <small class="text-muted d-block">Payment Status</small>
                 <x-badge :type="$sale->payment_status === 'paid' ? 'success' : 'warning'">{{ ucfirst($sale->payment_status) }}</x-badge>
             </div>

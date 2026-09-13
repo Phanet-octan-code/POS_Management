@@ -25,6 +25,7 @@ class UserController extends Controller
         $selectedStatus = $request->input('status');
 
         $users = User::with('roles')
+            ->withCount(['sales', 'purchases', 'expenses'])
             ->search($search)
             ->roleFilter($selectedRole)
             ->statusFilter($selectedStatus)
@@ -132,7 +133,11 @@ class UserController extends Controller
         }
 
         if (Auth::id() === $user->id) {
-            return back()->withErrors(['error' => 'You cannot delete your own authenticated account.']);
+            $msg = 'You cannot delete your own authenticated account.';
+            if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $msg], 422);
+            }
+            return back()->withErrors(['error' => $msg]);
         }
 
         $userName = $user->name;
@@ -141,7 +146,36 @@ class UserController extends Controller
 
         ActivityLoggerService::log('user.deleted', "Deleted user account {$userEmail}");
 
+        if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "User '{$userName}' has been deleted.",
+            ]);
+        }
+
         return back()->with('success', "User '{$userName}' has been deleted.");
+    }
+
+    /**
+     * Handle generic DELETE /users collection endpoint.
+     */
+    public function destroyAny(Request $request): RedirectResponse|JsonResponse
+    {
+        $id = $request->input('id') ?? $request->input('user_id') ?? $request->query('id');
+
+        if ($id) {
+            $user = User::find($id);
+            if ($user) {
+                return $this->destroy($user);
+            }
+        }
+
+        $msg = 'No user specified or user not found.';
+        if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+            return response()->json(['success' => false, 'message' => $msg], 404);
+        }
+
+        return back()->with('error', $msg);
     }
 
     /**

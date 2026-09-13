@@ -5,7 +5,7 @@
 @section('content')
 <div class="container-fluid p-0">
     <!-- Header -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <div>
             <h3 class="fw-bold text-dark mb-1">Notification Center</h3>
             <p class="text-muted mb-0">Live stock shortage warnings, sales transactions, purchases, payments, and system alerts.</p>
@@ -106,7 +106,7 @@
                         </small>
                     </div>
                 </div>
-                <div class="d-flex gap-2">
+                <div class="d-flex flex-wrap gap-2">
                     <a href="{{ route('inventory.index') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
                         <i class="bi bi-box-seam me-1"></i> View Stock
                     </a>

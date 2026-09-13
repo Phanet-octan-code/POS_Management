@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Product;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Use Bootstrap 5 for all Laravel pagination renderings
+        Paginator::useBootstrapFive();
+
         // Implicitly grant 'Admin' role all permissions
         \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
             if ($user->isAdmin()) {

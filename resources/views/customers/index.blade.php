@@ -74,13 +74,13 @@
     <!-- Filter & Search Toolbar -->
     <x-card class="mb-4">
         <form method="GET" action="{{ route('customers.index') }}" class="row g-2 align-items-center">
-            <div class="col-md-5 col-lg-6">
+            <div class="col-12 col-md-5 col-lg-6">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
                     <input type="text" name="search" class="form-control border-start-0" placeholder="Search by name, phone, email, or address..." value="{{ request('search') }}">
                 </div>
             </div>
-            <div class="col-md-3 col-lg-2">
+            <div class="col-6 col-md-3 col-lg-2">
                 <select name="type" class="form-select">
                     <option value="">All Customer Types</option>
                     <option value="Regular" {{ request('type') === 'Regular' ? 'selected' : '' }}>Regular</option>
@@ -88,14 +88,14 @@
                     <option value="Wholesale" {{ request('type') === 'Wholesale' ? 'selected' : '' }}>Wholesale</option>
                 </select>
             </div>
-            <div class="col-md-2 col-lg-2">
+            <div class="col-6 col-md-2 col-lg-2">
                 <select name="status" class="form-select">
                     <option value="">All Statuses</option>
                     <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Active</option>
                     <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inactive</option>
                 </select>
             </div>
-            <div class="col-md-2 col-lg-2 d-flex gap-2">
+            <div class="col-12 col-md-2 col-lg-2 d-flex gap-2">
                 <button type="submit" class="btn btn-dark w-100"><i class="bi bi-funnel me-1"></i> Filter</button>
                 @if(request()->hasAny(['search', 'type', 'status']))
                     <a href="{{ route('customers.index') }}" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
@@ -191,6 +191,10 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
+                                <form id="delete-customer-form-{{ $c->id }}" action="{{ route('customers.destroy', $c) }}" method="POST" class="d-none">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
                             </td>
                         </tr>
                     @empty
@@ -422,16 +426,29 @@
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const res = await fetchJson(`/customers/${id}`, { method: 'DELETE' });
-                    if (res.success) {
+                    const res = await fetchJson(`/customers/${id}`, { 
+                        method: 'DELETE',
+                        body: JSON.stringify({ id: id })
+                    });
+                    if (res && res.success) {
                         const row = document.getElementById(`customer-row-${id}`);
                         if (row) row.remove();
-                        Toast.fire({ icon: 'success', title: res.message });
+                        Toast.fire({ icon: 'success', title: res.message || 'Customer deleted successfully.' });
                     } else {
-                        Swal.fire('Error', res.message || 'Failed to delete customer.', 'error');
+                        const deleteForm = document.getElementById(`delete-customer-form-${id}`);
+                        if (deleteForm) {
+                            deleteForm.submit();
+                        } else {
+                            Swal.fire('Error', (res && res.message) ? res.message : 'Failed to delete customer.', 'error');
+                        }
                     }
                 } catch (err) {
-                    Swal.fire('Error', 'Failed to delete customer.', 'error');
+                    const deleteForm = document.getElementById(`delete-customer-form-${id}`);
+                    if (deleteForm) {
+                        deleteForm.submit();
+                    } else {
+                        Swal.fire('Error', 'Failed to delete customer.', 'error');
+                    }
                 }
             }
         });

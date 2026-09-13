@@ -19,7 +19,7 @@
             </h3>
             <p class="text-muted mb-0">Modify order details, adjust purchase quantities, or reconcile received inventory.</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
             <a href="{{ route('purchases.show', $purchase) }}" class="btn btn-outline-secondary rounded-pill px-3">
                 <i class="bi bi-eye me-1"></i> View Order
             </a>
@@ -52,7 +52,7 @@
 
             <div class="row g-3">
                 <!-- Supplier Selection -->
-                <div class="col-md-4">
+                <div class="col-12 col-md-6 col-lg-4">
                     <label class="form-label fw-semibold small text-uppercase">Supplier / Vendor <span class="text-danger">*</span></label>
                     <select name="supplier_id" id="supplier_id" class="form-select" required>
                         <option value="">-- Choose Supplier --</option>
@@ -65,19 +65,19 @@
                 </div>
 
                 <!-- Purchase Date -->
-                <div class="col-md-4">
+                <div class="col-12 col-md-6 col-lg-4">
                     <label class="form-label fw-semibold small text-uppercase">Purchase Date <span class="text-danger">*</span></label>
                     <input type="date" name="purchase_date" class="form-control" value="{{ old('purchase_date', $purchase->purchase_date->format('Y-m-d')) }}" required>
                 </div>
 
                 <!-- Reference Number -->
-                <div class="col-md-4">
+                <div class="col-12 col-md-6 col-lg-4">
                     <label class="form-label fw-semibold small text-uppercase">Reference No.</label>
                     <input type="text" name="reference_no" class="form-control font-monospace" value="{{ old('reference_no', $purchase->reference_no) }}" readonly>
                 </div>
 
                 <!-- Goods Status -->
-                <div class="col-md-4">
+                <div class="col-12 col-md-6 col-lg-4">
                     <label class="form-label fw-semibold small text-uppercase">Goods Status <span class="text-danger">*</span></label>
                     <select name="status" id="status" class="form-select" required>
                         <option value="received" {{ old('status', $purchase->status) === 'received' ? 'selected' : '' }}>Received (Stock updated)</option>
@@ -90,7 +90,7 @@
                 </div>
 
                 <!-- Payment Method -->
-                <div class="col-md-4">
+                <div class="col-12 col-md-6 col-lg-4">
                     <label class="form-label fw-semibold small text-uppercase">Payment Method</label>
                     <select name="payment_method" class="form-select">
                         <option value="cash" {{ old('payment_method', $purchase->payment_method) === 'cash' ? 'selected' : '' }}>Cash</option>
@@ -102,7 +102,7 @@
                 </div>
 
                 <!-- Payment Status -->
-                <div class="col-md-4">
+                <div class="col-12 col-md-6 col-lg-4">
                     <label class="form-label fw-semibold small text-uppercase">Payment Status <span class="text-danger">*</span></label>
                     <select name="payment_status" id="payment_status" class="form-select" required>
                         <option value="paid" {{ old('payment_status', $purchase->payment_status) === 'paid' ? 'selected' : '' }}>Paid in Full</option>
@@ -115,7 +115,7 @@
 
         <!-- Section 2: Product Line Items -->
         <x-card class="mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                 <h5 class="fw-bold text-dark mb-0">
                     <i class="bi bi-cart-plus me-2 text-primary"></i> Line Items & Products
                 </h5>

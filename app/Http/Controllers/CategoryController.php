@@ -104,7 +104,7 @@ class CategoryController extends Controller
         $statusStr = $category->is_active ? 'activated' : 'deactivated';
         ActivityLoggerService::log('category.status_updated', "Category '{$category->name}' was {$statusStr}", $category);
 
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'is_active' => $category->is_active,
@@ -121,7 +121,7 @@ class CategoryController extends Controller
         $productCount = $category->products()->count();
         if ($productCount > 0) {
             $message = "Cannot delete category '{$category->name}' because it contains {$productCount} product(s). Please reassign or delete them first.";
-            if (request()->ajax()) {
+            if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
                 return response()->json(['success' => false, 'message' => $message], 422);
             }
             return back()->with('error', $message);
@@ -131,7 +131,7 @@ class CategoryController extends Controller
         $category->delete();
         ActivityLoggerService::log('category.deleted', "Deleted category {$name}");
 
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => "Category '{$name}' deleted successfully.",
@@ -139,5 +139,48 @@ class CategoryController extends Controller
         }
 
         return back()->with('success', "Category '{$name}' deleted successfully.");
+    }
+
+    /**
+     * Handle generic DELETE /categories collection endpoint (e.g. via payload or bulk).
+     */
+    public function destroyAny(Request $request): RedirectResponse|JsonResponse
+    {
+        $id = $request->input('id') ?? $request->input('category_id') ?? $request->query('id');
+
+        // Handle bulk delete if array of ids provided
+        if ($request->has('ids') && is_array($request->input('ids'))) {
+            $deletedCount = 0;
+            $skippedCount = 0;
+            foreach ($request->input('ids') as $catId) {
+                $cat = Category::find($catId);
+                if ($cat && $cat->products()->count() === 0) {
+                    $cat->delete();
+                    $deletedCount++;
+                } else {
+                    $skippedCount++;
+                }
+            }
+            ActivityLoggerService::log('category.bulk_delete', "Bulk deleted {$deletedCount} categories");
+            $msg = "{$deletedCount} categories deleted successfully." . ($skippedCount > 0 ? " ({$skippedCount} skipped due to assigned products)" : "");
+            if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+                return response()->json(['success' => true, 'message' => $msg]);
+            }
+            return back()->with('success', $msg);
+        }
+
+        if ($id) {
+            $category = Category::find($id);
+            if ($category) {
+                return $this->destroy($category);
+            }
+        }
+
+        $msg = 'No category specified or category not found.';
+        if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+            return response()->json(['success' => false, 'message' => $msg], 404);
+        }
+
+        return back()->with('error', $msg);
     }
 }

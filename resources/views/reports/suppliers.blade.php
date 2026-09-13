@@ -13,7 +13,7 @@
 
     <!-- Summary KPI Cards -->
     <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Active Suppliers"
                 value="{{ number_format($summary['total_suppliers']) }}"
@@ -22,7 +22,7 @@
                 subtext="Registered vendor partners"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Purchase Orders"
                 value="{{ number_format($summary['total_orders']) }}"
@@ -31,7 +31,7 @@
                 subtext="Orders in selected period"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Sourced Amount"
                 value="${{ number_format($summary['total_purchased'], 2) }}"
@@ -40,7 +40,7 @@
                 subtext="Procurement expenditure"
             />
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-12 col-sm-6 col-xl-3">
             <x-stat-box
                 title="Total Payables Due"
                 value="${{ number_format($summary['total_payables'], 2) }}"

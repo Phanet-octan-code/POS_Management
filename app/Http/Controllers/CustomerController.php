@@ -111,7 +111,7 @@ class CustomerController extends Controller
         $statusStr = $customer->is_active ? 'activated' : 'deactivated';
         ActivityLoggerService::log('customer.status_updated', "{$statusStr} customer '{$customer->name}'", $customer, [], 'customers');
 
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'is_active' => $customer->is_active,
@@ -137,7 +137,7 @@ class CustomerController extends Controller
 
         ActivityLoggerService::log('customer.delete', "deleted customer '{$name}'", null, [], 'customers');
 
-        if (request()->ajax()) {
+        if (request()->ajax() || request()->wantsJson() || request()->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => $msg,
@@ -145,5 +145,49 @@ class CustomerController extends Controller
         }
 
         return back()->with('success', $msg);
+    }
+
+    /**
+     * Handle generic DELETE /customers collection endpoint.
+     */
+    public function destroyAny(Request $request): RedirectResponse|JsonResponse
+    {
+        $id = $request->input('id') ?? $request->input('customer_id') ?? $request->query('id');
+
+        // Handle bulk delete if array of ids provided
+        if ($request->has('ids') && is_array($request->input('ids'))) {
+            $deletedCount = 0;
+            foreach ($request->input('ids') as $cid) {
+                $c = Customer::find($cid);
+                if ($c) {
+                    if ($c->sales()->count() > 0) {
+                        $c->delete();
+                    } else {
+                        $c->forceDelete();
+                    }
+                    $deletedCount++;
+                }
+            }
+            ActivityLoggerService::log('customer.bulk_delete', "Bulk deleted {$deletedCount} customers");
+            $msg = "{$deletedCount} customers deleted successfully.";
+            if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+                return response()->json(['success' => true, 'message' => $msg]);
+            }
+            return back()->with('success', $msg);
+        }
+
+        if ($id) {
+            $customer = Customer::find($id);
+            if ($customer) {
+                return $this->destroy($customer);
+            }
+        }
+
+        $msg = 'No customer specified or customer not found.';
+        if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+            return response()->json(['success' => false, 'message' => $msg], 404);
+        }
+
+        return back()->with('error', $msg);
     }
 }
