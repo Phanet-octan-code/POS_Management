@@ -240,4 +240,15 @@ class FirebaseIntegrationTest extends TestCase
         $this->assertTrue($service->storeCategory($category));
         $this->assertTrue($service->storeSupplier($supplier));
     }
+
+    public function test_firebase_clear_command_runs_successfully(): void
+    {
+        Http::fake([
+            'https://firestore.googleapis.com/*' => Http::response(['documents' => []], 200),
+        ]);
+
+        $this->artisan('firebase:clear', ['--collection' => 'products'])
+            ->expectsOutputToContain('pos-management-88866')
+            ->assertExitCode(0);
+    }
 }

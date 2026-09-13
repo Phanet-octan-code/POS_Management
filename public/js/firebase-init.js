@@ -1,5 +1,4 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
 import { 
     getFirestore, 
@@ -33,7 +32,7 @@ let db = null;
 let isConnected = false;
 
 try {
-    app = initializeApp(firebaseConfig);
+    app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
     analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
     db = getFirestore(app);
     isConnected = true;

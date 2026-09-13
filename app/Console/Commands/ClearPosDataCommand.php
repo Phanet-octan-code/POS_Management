@@ -27,7 +27,7 @@ class ClearPosDataCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'pos:clear-data {--all : Also clear catalog products, categories, brands, customers and suppliers}';
+    protected $signature = 'pos:clear-data {--all : Also clear catalog products, categories, brands, customers and suppliers} {--firebase : Also clear all records in Firebase Firestore}';
 
     /**
      * The console command description.
@@ -87,11 +87,22 @@ class ClearPosDataCommand extends Command
         $this->line('  • Customer loyalty points and spend balances reset to zero.');
 
         if ($this->option('all')) {
+            ProductStock::truncate();
             Product::truncate();
-            $this->line('  • Products catalog cleared.');
+            \App\Models\Category::truncate();
+            \App\Models\Brand::truncate();
+            Customer::truncate();
+            \App\Models\Supplier::truncate();
+            $this->line('  • Catalog products, categories, brands, customers, and suppliers completely cleared.');
         }
 
         Schema::enableForeignKeyConstraints();
+
+        if ($this->option('firebase')) {
+            $this->line('  • Clearing Google Firebase Firestore cloud collections...');
+            app(\App\Services\FirebaseService::class)->clearAll();
+            $this->line('  • Firebase Firestore collections cleared.');
+        }
 
         $this->newLine();
         $this->info('All transactional data cleared successfully! Database is completely fresh and clean.');

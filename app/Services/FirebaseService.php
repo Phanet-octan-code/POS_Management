@@ -633,6 +633,63 @@ class FirebaseService
     }
 
     /**
+     * Delete all documents in a specified Firestore collection.
+     */
+    public function clearCollection(string $collection): int
+    {
+        $deleted = 0;
+        $pageToken = null;
+
+        do {
+            $url = "{$this->baseUrl}/{$collection}?key={$this->apiKey}&pageSize=100";
+            if ($pageToken) {
+                $url .= "&pageToken=" . urlencode($pageToken);
+            }
+
+            $response = Http::timeout(8)->get($url);
+            if (!$response->successful()) {
+                break;
+            }
+
+            $docs = $response->json('documents') ?? [];
+            foreach ($docs as $doc) {
+                $docName = $doc['name'] ?? null;
+                if ($docName) {
+                    $deleteUrl = "https://firestore.googleapis.com/v1/{$docName}?key={$this->apiKey}";
+                    $delRes = Http::timeout(4)->delete($deleteUrl);
+                    if ($delRes->successful()) {
+                        $deleted++;
+                    }
+                }
+            }
+
+            $pageToken = $response->json('nextPageToken');
+        } while ($pageToken);
+
+        return $deleted;
+    }
+
+    /**
+     * Delete all documents across all supported Firestore collections.
+     */
+    public function clearAll(): array
+    {
+        $collections = [
+            'sales', 'products', 'categories', 'brands',
+            'customers', 'suppliers', 'purchases', 'expenses',
+            'returns', 'stock_movements', 'settings', 'activity_logs',
+            'notifications', 'users', '_health'
+        ];
+
+        $results = [];
+        foreach ($collections as $collection) {
+            $results[$collection] = $this->clearCollection($collection);
+        }
+
+        return $results;
+    }
+
+    /**
      * Retrieve complete snapshot payload for client-side Firebase batch storing.
      */
     public function getExportPayload(): array
